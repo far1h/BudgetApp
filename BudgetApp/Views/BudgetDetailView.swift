@@ -54,6 +54,15 @@ struct BudgetDetailView: View {
         }
     }
     
+    private func deleteTransaction(_ transaction: Transaction) {
+        viewContext.delete(transaction)
+        do {
+            try viewContext.save()
+        } catch {
+            print("Failed to delete transaction: \(error)")
+        }
+    }
+    
     var body: some View {
         VStack (alignment: .leading) {
             Text(budgetCategory.title ?? "No Title")
@@ -93,7 +102,7 @@ struct BudgetDetailView: View {
             
             
             // Display list of transactions for this category
-            TransactionListView(category: budgetCategory)
+            TransactionListView(category: budgetCategory, onDeleteTransaction: deleteTransaction)
                 Spacer()
         }
         .padding()

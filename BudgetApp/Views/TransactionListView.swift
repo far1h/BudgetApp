@@ -11,9 +11,15 @@ import CoreData
 struct TransactionListView: View {
     
     @FetchRequest var transactions: FetchedResults<Transaction>
+    let onDeleteTransaction: (Transaction) -> Void
     
-    init(category: BudgetCategory) {
+    init(category: BudgetCategory, onDeleteTransaction: @escaping (Transaction) -> Void) {
         _transactions = FetchRequest(fetchRequest: BudgetCategory.transactionsByCategory(category: category))
+        self.onDeleteTransaction = onDeleteTransaction
+    }
+    
+    private func deleteTransactionItem(_ offsets: IndexSet) {
+        offsets.map { transactions[$0] }.forEach(onDeleteTransaction)
     }
     
     var body: some View {
@@ -25,6 +31,7 @@ struct TransactionListView: View {
                     Text(transaction.total.toCurrency())
                 }
             }
+            .onDelete(perform: deleteTransactionItem)
             if transactions.isEmpty {
                 Text("No transactions available.")
             }
