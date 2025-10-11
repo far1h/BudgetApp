@@ -6,22 +6,85 @@
 //
 
 import SwiftUI
+import CoreData
 
 // View details of a budget category
+// View and Add a transaction to a budget category
 struct BudgetDetailView: View {
     
     let budgetCategory: BudgetCategory
     
+    @State private var title: String = ""
+    @State private var total: String = ""
+    @State private var titleError: String = ""
+    @State private var totalError: String = ""
+    
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    private var isFormValid: Bool {
+        titleError = ""
+        totalError = ""
+        
+        if title.isEmpty {
+            titleError = "Title is required."
+        }
+        if total.isEmpty || Double(total) == nil || (Double(total) ?? 0) <= 0 {
+            totalError = "Total must be a valid number greater than zero."
+        }
+        
+        return !titleError.isEmpty && !totalError.isEmpty
+    }
+    
+    private func addTransaction() {
+        let newTransaction = Transaction(context: viewContext)
+        newTransaction.title = title
+        newTransaction.total = Double(total)!
+        
+        // available after setting budget category relationship one to many
+        budgetCategory.addToTransaction(newTransaction)
+        
+        do {
+            try viewContext.save()
+            // Reset form
+            title = ""
+            total = ""
+        } catch {
+            print("Failed to save transaction: \(error)")
+        }
+    }
+    
     var body: some View {
-        VStack (alignment: .leading) {
+        VStack {
+            Text(budgetCategory.title ?? "No Title")
+                .font(.largeTitle)
             HStack {
-                VStack (alignment: .leading) {
-                    Text(budgetCategory.title ?? "No Title")
-                        .font(.largeTitle)
-                    HStack {
-                        Text("Budget:")
-                        Text(budgetCategory.total.toCurrency())
-                    }.fontWeight(.bold)
+                Text("Budget:")
+                Text(budgetCategory.total.toCurrency())
+            }
+            Form {
+                Section("Transactions") {
+                    TextField("Title", text: $title)
+                    if !titleError.isEmpty {
+                        Text(titleError)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                    }
+                    TextField("Total", text: $total)
+                        .keyboardType(.decimalPad)
+                    if !totalError.isEmpty {
+                        Text(totalError)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                    }
+                }
+                HStack {
+                    Spacer()
+                    Button("Add Transaction") {
+                        if isFormValid {
+                            addTransaction()
+                        }
+                    }
+                    Spacer()
                 }
             }
             Spacer()
