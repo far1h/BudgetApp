@@ -12,10 +12,11 @@ struct BudgetListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     let categories: FetchedResults<BudgetCategory>
-    let onDelete: (BudgetCategory) -> Void
+    let onDeleteCategory: (BudgetCategory) -> Void
+    let onEditCategory: (BudgetCategory) -> Void
     
     private func deleteCategoryItem(_ offsets: IndexSet) {
-        offsets.map { categories[$0] }.forEach(onDelete)
+        offsets.map { categories[$0] }.forEach(onDeleteCategory)
     }
     
     var body: some View {
@@ -36,7 +37,20 @@ struct BudgetListView: View {
                         }
                     }
                 }
-            }.onDelete(perform: deleteCategoryItem)
+                .swipeActions(edge: .trailing) {
+                    Button {
+                        onEditCategory(category)
+                    } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
+                    .tint(.blue)
+                    
+                    Button(role: .destructive) {
+                        onDeleteCategory(category)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }   }
+            }
         }.overlay {
             if categories.isEmpty {
                 Text("No categories available.")

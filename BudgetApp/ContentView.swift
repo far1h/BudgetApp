@@ -7,13 +7,29 @@
 
 import SwiftUI
 
+
+enum SheetAction: Identifiable {
+    
+    case add
+    case edit(BudgetCategory)
+    
+    var id: Int {
+        switch self {
+            case .add:
+                return 1
+            case .edit(_):
+                return 2
+        }
+    }
+    
+}
+
 struct ContentView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     // Fetch request to get all budget categories
     @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     
-    @State private var isPresentingAddCategory = false
     private var grandTotal: Double {
         categories.reduce(0) { partialResult, category in
             partialResult + category.total
@@ -29,19 +45,31 @@ struct ContentView: View {
         }
     }
     
+
+    @State private var sheetAction: SheetAction?
+    
+    private func editCategory(_ category: BudgetCategory) {
+        sheetAction = .edit(category)
+    }
+    
     
     var body: some View {
         NavigationStack {
             VStack {
                 Text(grandTotal.toCurrency())
                     .fontWeight(.bold)
-                BudgetListView(categories: categories, onDelete: deleteCategory)
-            }.sheet(isPresented: $isPresentingAddCategory) {
-                AddBudgetCategoryView()
+                BudgetListView(categories: categories, onDeleteCategory: deleteCategory, onEditCategory: editCategory)
+            }.sheet(item: $sheetAction) { action in
+                switch action {
+                case .add:
+                    AddBudgetCategoryView()
+                case .edit(_):
+                    AddBudgetCategoryView()
+                }
             }.toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        isPresentingAddCategory = true
+                        sheetAction = .add
                     } label: {
                         Text("Add Category")
                     }
