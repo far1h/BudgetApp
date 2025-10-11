@@ -12,6 +12,11 @@ struct BudgetListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     let categories: FetchedResults<BudgetCategory>
+    let onDelete: (BudgetCategory) -> Void
+    
+    private func deleteCategoryItem(_ offsets: IndexSet) {
+        offsets.map { categories[$0] }.forEach(onDelete)
+    }
     
     var body: some View {
         List {
@@ -20,8 +25,9 @@ struct BudgetListView: View {
                     Text(category.title ?? "")
                     Spacer()
                     Text(category.total.toCurrency())
+
                 }
-            }
+            }.onDelete(perform: deleteCategoryItem)
         }.overlay {
             if categories.isEmpty {
                 Text("No categories available.")
@@ -30,9 +36,9 @@ struct BudgetListView: View {
     }
 }
 
-struct BudgetListView_Previews: PreviewProvider {
-    @FetchRequest(sortDescriptors: []) static var categories: FetchedResults<BudgetCategory>
-    static var previews: some View {
-        BudgetListView(categories: categories)
-    }
-}
+//struct BudgetListView_Previews: PreviewProvider {
+//    @FetchRequest(sortDescriptors: []) static var categories: FetchedResults<BudgetCategory>
+//    static var previews: some View {
+//        BudgetListView(categories: categories)
+//    }
+//}

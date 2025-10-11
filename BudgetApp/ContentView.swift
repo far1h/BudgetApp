@@ -9,6 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @Environment(\.managedObjectContext) private var viewContext
+    // Fetch request to get all budget categories
+    @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
+    
     @State private var isPresentingAddCategory = false
     private var grandTotal: Double {
         categories.reduce(0) { partialResult, category in
@@ -16,16 +20,22 @@ struct ContentView: View {
         }
     }
     
-    @Environment(\.managedObjectContext) private var viewContext
-    // Fetch request to get all budget categories
-    @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
+    private func deleteCategory(_ category: BudgetCategory) {
+        viewContext.delete(category)
+        do {
+            try viewContext.save()
+        } catch {
+            print("Failed to delete category: \(error)")
+        }
+    }
+    
     
     var body: some View {
         NavigationStack {
             VStack {
                 Text(grandTotal.toCurrency())
                     .fontWeight(.bold)
-                BudgetListView(categories: categories)
+                BudgetListView(categories: categories, onDelete: deleteCategory)
             }.sheet(isPresented: $isPresentingAddCategory) {
                 AddBudgetCategoryView()
             }.toolbar {
