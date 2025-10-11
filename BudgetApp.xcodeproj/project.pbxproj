@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9138F3712E9A78420096BEE9 /* Transcation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9138F3702E9A78420096BEE9 /* Transcation+CoreDataClass.swift */; };
+		9138F3732E9A78790096BEE9 /* BudgetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9138F3722E9A78790096BEE9 /* BudgetDetailView.swift */; };
 		9161FAC12E99ED6D0049B31C /* BudgetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9161FAC02E99ED6D0049B31C /* BudgetListView.swift */; };
 		917471B12E996C980080FCAA /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917471B02E996C980080FCAA /* Double+Extensions.swift */; };
 		91AE18612E995610009A7E1F /* BudgetAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AE18602E995610009A7E1F /* BudgetAppApp.swift */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9138F3702E9A78420096BEE9 /* Transcation+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transcation+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9138F3722E9A78790096BEE9 /* BudgetDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetDetailView.swift; sourceTree = "<group>"; };
 		9161FAC02E99ED6D0049B31C /* BudgetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetListView.swift; sourceTree = "<group>"; };
 		917471B02E996C980080FCAA /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
 		91AE185D2E995610009A7E1F /* BudgetApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				91AE18742E995995009A7E1F /* BudgetCategory+CoreDataClass.swift */,
+				9138F3702E9A78420096BEE9 /* Transcation+CoreDataClass.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -115,6 +120,7 @@
 			children = (
 				9161FAC02E99ED6D0049B31C /* BudgetListView.swift */,
 				91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */,
+				9138F3722E9A78790096BEE9 /* BudgetDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -189,11 +195,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9138F3712E9A78420096BEE9 /* Transcation+CoreDataClass.swift in Sources */,
 				91AE18632E995610009A7E1F /* ContentView.swift in Sources */,
 				9161FAC12E99ED6D0049B31C /* BudgetListView.swift in Sources */,
 				91AE18612E995610009A7E1F /* BudgetAppApp.swift in Sources */,
 				91DCD84D2E9A035F006C1A29 /* AddBudgetCategoryView.swift in Sources */,
 				917471B12E996C980080FCAA /* Double+Extensions.swift in Sources */,
+				9138F3732E9A78790096BEE9 /* BudgetDetailView.swift in Sources */,
 				91AE18752E995995009A7E1F /* BudgetCategory+CoreDataClass.swift in Sources */,
 				91AE18782E995DBE009A7E1F /* CoreDataManager.swift in Sources */,
 				91AE18712E99566D009A7E1F /* BudgetModel.xcdatamodeld in Sources */,

@@ -21,11 +21,13 @@ struct BudgetListView: View {
     var body: some View {
         List {
             ForEach(categories) { category in
-                HStack {
-                    Text(category.title ?? "")
-                    Spacer()
-                    Text(category.total.toCurrency())
-
+                NavigationLink(destination: BudgetDetailView(budgetCategory: category)) {
+                    HStack {
+                        Text(category.title ?? "")
+                        Spacer()
+                        Text(category.total.toCurrency())
+                        
+                    }
                 }
             }.onDelete(perform: deleteCategoryItem)
         }.overlay {
