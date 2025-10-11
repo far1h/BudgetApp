@@ -13,6 +13,7 @@ struct AddBddugetCategoryView: View {
     @State private var total: Double = 100
     @State private var messages: [String] = []
     
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
     
     private var isFormValid: Bool {
@@ -38,6 +39,7 @@ struct AddBddugetCategoryView: View {
             // Reset form
             title = ""
             total = 100
+            dismiss()
         } catch {
             print("Failed to save category: \(error)")
         }
@@ -65,7 +67,7 @@ struct AddBddugetCategoryView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
-                        
+                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {

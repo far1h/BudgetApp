@@ -9,15 +9,34 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @Environment(\.managedObjectContext) private var viewContext
+    // Fetch request to get all budget categories
+    @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     @State private var isPresentingAddCategory = false
     
     var body: some View {
         NavigationStack {
             VStack {
-                Image(systemName: "globe")
-                    .imageScale(.large)
-                    .foregroundColor(.accentColor)
-                Text("Hello, world!")
+                List {
+                    ForEach(categories) { category in
+                        VStack(alignment: .leading) {
+                            Text(category.title ?? "")
+                                .font(.headline)
+                            Text(category.total.toCurrency())
+                                .font(.subheadline)
+                        }
+                    }.onDelete { indexSet in
+                        indexSet.forEach { index in
+                            let category = categories[index]
+                            viewContext.delete(category)
+                            do {
+                                try viewContext.save()
+                            } catch {
+                                print("Failed to delete category: \(error)")
+                            }
+                        }
+                    }
+                }
             }.sheet(isPresented: $isPresentingAddCategory) {
                 AddBddugetCategoryView()
             }.toolbar {
