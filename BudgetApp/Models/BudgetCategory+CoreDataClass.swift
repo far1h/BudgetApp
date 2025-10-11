@@ -14,5 +14,13 @@ public class BudgetCategory: NSManagedObject {
     public override func awakeFromInsert() {
         self.dateCreated = Date()
     }
-        
+    
+    static func transactionsByCategory(category: BudgetCategory) -> NSFetchRequest<Transaction> {
+        let request: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+        request.predicate = NSPredicate(format: "category == %@", category)
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Transaction.dateCreated, ascending: false)]
+        return request
+    }
+    
+    
 }

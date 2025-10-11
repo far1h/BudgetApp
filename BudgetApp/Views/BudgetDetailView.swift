@@ -32,7 +32,7 @@ struct BudgetDetailView: View {
             totalError = "Total must be a valid number greater than zero."
         }
         
-        return !titleError.isEmpty && !totalError.isEmpty
+        return titleError.isEmpty && totalError.isEmpty
     }
     
     private func addTransaction() {
@@ -48,13 +48,14 @@ struct BudgetDetailView: View {
             // Reset form
             title = ""
             total = ""
+            print("Transaction added successfully.")
         } catch {
             print("Failed to save transaction: \(error)")
         }
     }
     
     var body: some View {
-        VStack {
+        VStack (alignment: .leading) {
             Text(budgetCategory.title ?? "No Title")
                 .font(.largeTitle)
             HStack {
@@ -70,7 +71,6 @@ struct BudgetDetailView: View {
                             .font(.caption)
                     }
                     TextField("Total", text: $total)
-                        .keyboardType(.decimalPad)
                     if !totalError.isEmpty {
                         Text(totalError)
                             .foregroundColor(.red)
@@ -82,13 +82,16 @@ struct BudgetDetailView: View {
                     Button("Add Transaction") {
                         if isFormValid {
                             addTransaction()
+                            
                         }
                     }
                     Spacer()
                 }
             }
-            Spacer()
+            TransactionListView(category: budgetCategory)
+                Spacer()
         }
+        .padding()
     }
 }
 
