@@ -8,14 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var isPresentingAddCategory = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationStack {
+            VStack {
+                Image(systemName: "globe")
+                    .imageScale(.large)
+                    .foregroundColor(.accentColor)
+                Text("Hello, world!")
+            }.sheet(isPresented: $isPresentingAddCategory) {
+                AddBddugetCategoryView()
+            }.toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isPresentingAddCategory = true
+                    } label: {
+                        Text("Add Category")
+                    }
+                }
+            }
         }
-        .padding()
     }
 }
 
@@ -24,3 +38,6 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+
+
+// to add a sheet create the state variable and embed the view in a navigation stack and add the .sheet modifier and a toolbar with a button to present the sheet to the VStack
