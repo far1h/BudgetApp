@@ -25,7 +25,10 @@ struct TransactionListView: View {
                     Text(transaction.total.toCurrency())
                 }
             }
-        }
+            if transactions.isEmpty {
+                Text("No transactions available.")
+            }
+        }.listStyle(.plain)
     }
 }
 

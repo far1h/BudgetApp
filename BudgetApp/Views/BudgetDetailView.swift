@@ -41,7 +41,7 @@ struct BudgetDetailView: View {
         newTransaction.total = Double(total)!
         
         // available after setting budget category relationship one to many
-        budgetCategory.addToTransaction(newTransaction)
+        budgetCategory.addToTransactions(newTransaction)
         
         do {
             try viewContext.save()
@@ -88,6 +88,11 @@ struct BudgetDetailView: View {
                     Spacer()
                 }
             }
+            // Display summary of the budget category
+            BudgetSummaryView(category: budgetCategory)
+            
+            
+            // Display list of transactions for this category
             TransactionListView(category: budgetCategory)
                 Spacer()
         }

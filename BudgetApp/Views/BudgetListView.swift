@@ -25,8 +25,15 @@ struct BudgetListView: View {
                     HStack {
                         Text(category.title ?? "")
                         Spacer()
-                        Text(category.total.toCurrency())
-                        
+                        VStack (alignment: .trailing, spacing: 10) {
+                            Text(category.total.toCurrency())
+                            Text("\(category.overSpent ? "Overspent" : "Remaining") \(category.remainingBudget.toCurrency())")
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                .fontWeight(.bold)
+                                .foregroundColor(category.overSpent ? .red : .green)
+                                .lineLimit(1)
+                            
+                        }
                     }
                 }
             }.onDelete(perform: deleteCategoryItem)
@@ -35,6 +42,8 @@ struct BudgetListView: View {
                 Text("No categories available.")
             }
         }
+        .listStyle(.plain)
+
     }
 }
 
