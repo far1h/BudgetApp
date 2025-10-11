@@ -56,8 +56,11 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text(grandTotal.toCurrency())
-                    .fontWeight(.bold)
+                HStack {
+                    Text("Total Budget -")
+                    Text(grandTotal.toCurrency())
+                        .fontWeight(.bold)
+                }
                 BudgetListView(categories: categories, onDeleteCategory: deleteCategory, onEditCategory: editCategory)
             }.sheet(item: $sheetAction) { action in
                 switch action {

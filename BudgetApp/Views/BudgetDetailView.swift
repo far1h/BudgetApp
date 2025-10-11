@@ -80,6 +80,7 @@ struct BudgetDetailView: View {
                             .font(.caption)
                     }
                     TextField("Total", text: $total)
+                        .keyboardType(.decimalPad)
                     if !totalError.isEmpty {
                         Text(totalError)
                             .foregroundColor(.red)
