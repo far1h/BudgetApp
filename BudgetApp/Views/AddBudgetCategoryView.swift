@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AddBudgetCategoryView: View {
     
+    var categoryToEdit: BudgetCategory? = nil
+    
     @State private var title: String = ""
     @State private var total: Double = 100
     @State private var messages: [String] = []
@@ -29,16 +31,20 @@ struct AddBudgetCategoryView: View {
         return messages.isEmpty
     }
     
-    private func addCategory() {
-        let newCategory = BudgetCategory(context: viewContext)
-        newCategory.title = title
-        newCategory.total = total
+    private func saveOrUpdate() {
+        if let category = categoryToEdit {
+            // Update existing category
+            category.title = title
+            category.total = total
+        } else {
+            // Add new category
+            let newCategory = BudgetCategory(context: viewContext)
+            newCategory.title = title
+            newCategory.total = total
+        }
         
         do {
             try viewContext.save()
-            // Reset form
-            title = ""
-            total = 100
             dismiss()
         } catch {
             print("Failed to save category: \(error)")
@@ -64,6 +70,12 @@ struct AddBudgetCategoryView: View {
                         .font(.caption)
                 }
             }
+            .onAppear {
+                if let category = categoryToEdit {
+                    title = category.title ?? ""
+                    total = category.total
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
@@ -73,7 +85,7 @@ struct AddBudgetCategoryView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
                         if isFormValid {
-                            addCategory()
+                            saveOrUpdate()
                         }
                     }
                 }
