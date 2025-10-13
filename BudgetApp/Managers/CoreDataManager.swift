@@ -34,7 +34,10 @@ class CoreDataManager {
         let context = manager.context
         
         for i in 0..<5 {
-            
+            let category = BudgetCategory(context: context)
+            category.dateCreated = Date()
+            category.title = "Category \(i)"
+            category.total = Double((i + 1) * 100)
         }
         
         do {
