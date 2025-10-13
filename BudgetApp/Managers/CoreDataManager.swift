@@ -8,17 +8,19 @@
 import Foundation
 import CoreData
 
-// Singleton class to manage Core Data stack
 class CoreDataManager {
     
-    // Shared instance
     static let shared = CoreDataManager()
     
-    // Persistent container which loads the data model
     let persistentContainer: NSPersistentContainer
     
-    private init() {
+    private init(inMemory: Bool = false) {
         persistentContainer = NSPersistentContainer(name: "BudgetModel")
+
+        if inMemory {
+            persistentContainer.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
+        }
+        
         persistentContainer.loadPersistentStores { description, error in
             if let error {
                 fatalError("Unable to load persistent stores: \(error)")
@@ -26,7 +28,24 @@ class CoreDataManager {
         }
     }
     
-    // Context for performing operations
+    static var preview: CoreDataManager = {
+        let manager = CoreDataManager(inMemory: true)
+        
+        let context = manager.context
+        
+        for i in 0..<5 {
+            
+        }
+        
+        do {
+            try context.save()
+        } catch {
+            fatalError("Failed to save preview data: \(error)")
+        }
+        
+        return manager
+    }()
+    
     var context: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
