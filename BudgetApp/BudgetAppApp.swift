@@ -11,7 +11,7 @@ import SwiftUI
 struct BudgetAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            BudgetListView()
                 // Inject the managed object context into the environment
                 .environment(\.managedObjectContext, CoreDataManager.shared.context)
         }
