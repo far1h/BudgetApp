@@ -16,14 +16,7 @@ struct BudgetListView: View {
         List {
             ForEach(categories) { category in
                 NavigationLink(destination: Text("Hello World")) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(category.title ?? "No Title")
-                                .font(.headline)
-                            Text("Total: \(category.total.toCurrency())")
-                                .font(.subheadline)
-                        }
-                    }
+                    BudgetCellView(category: category)
                 }
             }
         }.navigationTitle("Budget App")
@@ -50,3 +43,5 @@ struct BudgetListView_Previews: PreviewProvider {
         }
     }
 }
+
+

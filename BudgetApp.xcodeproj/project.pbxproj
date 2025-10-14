@@ -20,6 +20,7 @@
 		91AE18782E995DBE009A7E1F /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AE18772E995DBE009A7E1F /* CoreDataManager.swift */; };
 		91DCD84D2E9A035F006C1A29 /* AddBudgetCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */; };
 		91F7FD3A2E9DE07900E5A439 /* BudgetCategory+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */; };
+		91F7FD3C2E9DE47D00E5A439 /* BudgetCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD3B2E9DE47D00E5A439 /* BudgetCellView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		91AE18772E995DBE009A7E1F /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBudgetCategoryView.swift; sourceTree = "<group>"; };
 		91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BudgetCategory+Extensions.swift"; sourceTree = "<group>"; };
+		91F7FD3B2E9DE47D00E5A439 /* BudgetCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetCellView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 				9138F3722E9A78790096BEE9 /* BudgetDetailView.swift */,
 				9138F3742E9A81430096BEE9 /* TransactionListView.swift */,
 				9138F3762E9A88220096BEE9 /* BudgetSummaryView.swift */,
+				91F7FD3B2E9DE47D00E5A439 /* BudgetCellView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -207,6 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9138F3712E9A78420096BEE9 /* Transcation+CoreDataClass.swift in Sources */,
+				91F7FD3C2E9DE47D00E5A439 /* BudgetCellView.swift in Sources */,
 				9161FAC12E99ED6D0049B31C /* BudgetListView.swift in Sources */,
 				91AE18612E995610009A7E1F /* BudgetAppApp.swift in Sources */,
 				91DCD84D2E9A035F006C1A29 /* AddBudgetCategoryView.swift in Sources */,
