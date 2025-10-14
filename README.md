@@ -1,7 +1,7 @@
 #  Trying Core Data in MV Pattern with SwiftUI
 
 ## Description
-This project demonstrates how to integrate Core Data into a SwiftUI application using the Model-View (MV) architectural pattern. The application allows users to create, read, update, and delete (CRUD) items stored in a Core Data persistent store.
+This project demonstrates how to integrate Core Data into a SwiftUI application using the Model-View (MV) architectural pattern. The application allows users to create, read, update, and delete (CRUD) items stored in a Core Data persistent store. This example focuses also demonstrates how to use one-to-many relationships and many-to-one relationships in Core Data.
 
 Steps taken to implement:
 1. Add Core Data model named `BudgetModel` and create an entity named `BudgetCategory` with attributes `title` (Non-optional String), `total` (Non-optional Double), `dateCreated` (Non-optional Date). 
