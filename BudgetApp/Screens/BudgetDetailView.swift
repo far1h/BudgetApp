@@ -61,9 +61,15 @@ struct BudgetDetailView: View {
             print("Failed to save transaction: \(error)")
         }
     }
-    
-    private func deleteTransaction(_ transaction: Transaction) {
-        viewContext.delete(transaction)
+        
+    private func deleteTransaction(_ indexSet: IndexSet) {
+        // receive index set of the item to be deleted
+        // for each value in the index set, find the transaction in the fetched results and delete it from the context
+        indexSet.forEach { index in
+            let transaction = transactions[index]
+            viewContext.delete(transaction)
+        }
+        
         do {
             try viewContext.save()
         } catch {
@@ -74,6 +80,19 @@ struct BudgetDetailView: View {
     var body: some View {
 
             Form {
+                VStack {
+                    Text(category.total.toCurrency())
+                        .font(.largeTitle)
+                        .bold()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 8)
+                    Text("Remaining: \(category.remainingBudget.toCurrency())")
+                        .foregroundColor(category.remainingBudget < 0 ? .red : .green)
+                        .bold()
+                }
+                .listRowSeparator(.hidden)
+                
+                
                 Section("New Expense") {
                     TextField("Title", text: $title)
                     TextField("Total", text: $total)
@@ -84,12 +103,23 @@ struct BudgetDetailView: View {
                     }
                 }
                 Section("Expenses") {
-                    List (transactions) { transaction in
-                        HStack {
-                            Text(transaction.title ?? "")
-                            Spacer()
-                            Text(transaction.total.toCurrency())
-                        }
+                    List {
+                            ForEach (transactions) { transaction in
+                                HStack {
+                                    Text(transaction.title ?? "")
+                                    Spacer()
+                                    Text(transaction.total.toCurrency())
+                                }
+                            }.onDelete(perform: deleteTransaction)
+                            HStack {
+                                Text("Total Spent")
+                                    .bold()
+                                Spacer()
+                                Text(category.totalSpent.toCurrency())
+                                    .bold()
+                            }
+                            .listRowBackground(Color.gray.opacity(0.125))
+                        
                     }
                 }
             }.navigationTitle(category.title ?? "Budget Detail")
@@ -102,7 +132,7 @@ struct BudgetDetailViewContainer: View {
     @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     
     var body: some View {
-        BudgetDetailView(category: categories[1])
+        BudgetDetailView(category: categories.first(where: { $0.title == "Groceries" }) ?? categories[0])
     }
 }
 

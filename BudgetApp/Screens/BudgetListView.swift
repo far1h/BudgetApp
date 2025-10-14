@@ -20,7 +20,13 @@ struct BudgetListView: View {
                     NavigationLink {
                         BudgetDetailView(category: category)
                     } label: {
-                        BudgetCellView(category: category)
+                        HStack {
+                            Text(category.title ?? "No Title")
+                                .font(.headline)
+                            Spacer()
+                            Text(category.total.toCurrency())
+                                .font(.subheadline)
+                        }
                     }
                     
                 }

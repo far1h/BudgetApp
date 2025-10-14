@@ -10,6 +10,15 @@ import CoreData
 
 extension BudgetCategory {
     
+    var totalSpent : Double {
+        let transactions = self.transactions as? Set<Transaction> ?? []
+        return transactions.reduce(0) { $0 + $1.total }
+    }
+    
+    var remainingBudget: Double {
+        return total - totalSpent
+    }
+    
     static func exists(title: String, in context: NSManagedObjectContext) -> Bool {
         let fetchRequest = BudgetCategory.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "title == %@", title)

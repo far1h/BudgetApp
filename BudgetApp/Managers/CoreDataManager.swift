@@ -56,6 +56,12 @@ class CoreDataManager {
         transaction2.total = 30.0
         groceries.addToTransactions(transaction2)
         
+        let transaction3 = Transaction(context: context)
+        transaction3.dateCreated = Date()
+        transaction3.title = "Banana"
+        transaction3.total = 20.0
+        groceries.addToTransactions(transaction3)
+        
         do {
             try context.save()
         } catch {
