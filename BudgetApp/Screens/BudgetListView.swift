@@ -12,6 +12,20 @@ struct BudgetListView: View {
     @State private var isPresentingAddBudgetView: Bool = false
     @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    private func deleteBudgetCategory(indexSet: IndexSet) {
+        indexSet.forEach { index in
+            let category = categories[index]
+            viewContext.delete(category)
+        }
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error deleting category: \(error)")
+        }
+    }
+    
     var body: some View {
         // Wrap in NavigationStack to enable NavigationLink previews
         NavigationStack {
@@ -28,8 +42,8 @@ struct BudgetListView: View {
                                 .font(.subheadline)
                         }
                     }
-                    
                 }
+                .onDelete(perform: deleteBudgetCategory)
             }.navigationTitle("Budget App")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
