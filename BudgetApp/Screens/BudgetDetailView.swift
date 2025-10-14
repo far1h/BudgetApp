@@ -17,6 +17,7 @@ struct BudgetDetailView: View {
     @State private var title: String = ""
     @State private var total: String = ""
     @State private var messages: [String] = []
+    @State private var isPresentingEditBudgetView: Bool = false
     
     @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
     
@@ -123,6 +124,18 @@ struct BudgetDetailView: View {
                     }
                 }
             }.navigationTitle(category.title ?? "Budget Detail")
+            .sheet(isPresented: $isPresentingEditBudgetView) {
+                AddBudgetCategoryView(categoryToEdit: category)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isPresentingEditBudgetView = true
+                    } label: {
+                        Text("Edit")
+                    }
+                }
+            }
         }
 }
 
