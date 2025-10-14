@@ -55,3 +55,37 @@ do {
     // Handle the error
 }
 ```
+6. Relationships:
+```swift
+// Assuming a one-to-many relationship between Category and Transaction
+let category = BudgetCategory(context: viewContext)
+category.title = "Sample Category"
+category.total = 100.0
+let transaction = Transaction(context: viewContext)
+transaction.title = "Sample Transaction"
+transaction.total = 50.0
+category.addToTransactions(transaction) // Add transaction to category's transactions set
+do {
+    try viewContext.save()
+} catch {
+    // Handle the error
+}
+```
+7. Fetching related entities:
+```swift
+// Typecast transactions from NSSet to [Transaction]
+// Not the best approach because you're casting it every time you need to access transactions and changes to the transactions of a category won't be automatically reflected in the UI
+ 
+let category = categories[index]
+let transactions = category.transactions?.allObjects as? [Transaction] ?? []
+
+// Better approach is to use a separate FetchRequest for transactions filtered by the selected category
+
+init(category: BudgetCategory) {
+    self.category = category
+    // Fetch transactions related to the selected category using a predicate and setting it to the FetchRequest using _transactions (_ is used to access the property wrapper directly and set its value, if we don't use _ we would be accessing the wrapped value)
+    _transactions = FetchRequest(sortDescriptors: [],
+        predicate: NSPredicate(format: "category == %@", category)
+    )
+}
+```

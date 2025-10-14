@@ -33,12 +33,28 @@ class CoreDataManager {
         
         let context = manager.context
         
-        for i in 0..<5 {
-            let category = BudgetCategory(context: context)
-            category.dateCreated = Date()
-            category.title = "Category \(i)"
-            category.total = Double((i + 1) * 100)
-        }
+        // Create sample data for preview
+        let entertainment = BudgetCategory(context: context)
+        entertainment.dateCreated = Date()
+        entertainment.title = "Entertainment"
+        entertainment.total = 200.0
+        
+        let groceries = BudgetCategory(context: context)
+        groceries.dateCreated = Date()
+        groceries.title = "Groceries"
+        groceries.total = 300.0
+        
+        let transaction1 = Transaction(context: context)
+        transaction1.dateCreated = Date()
+        transaction1.title = "Movie"
+        transaction1.total = 50.0
+        entertainment.addToTransactions(transaction1)
+        
+        let transaction2 = Transaction(context: context)
+        transaction2.dateCreated = Date()
+        transaction2.title = "Apple"
+        transaction2.total = 30.0
+        groceries.addToTransactions(transaction2)
         
         do {
             try context.save()

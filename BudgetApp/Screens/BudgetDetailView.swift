@@ -18,6 +18,14 @@ struct BudgetDetailView: View {
     @State private var total: String = ""
     @State private var messages: [String] = []
     
+    @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
+    
+    init(category: BudgetCategory) {
+        self.category = category
+        _transactions = FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "category == %@", category))
+            
+        }
+    
     @Environment(\.managedObjectContext) private var viewContext
     
     private var isFormValid: Bool {
@@ -73,6 +81,15 @@ struct BudgetDetailView: View {
                     ButtonView(onClick: addTransaction, buttonTitle: "Add Expense")
                     if !messages.isEmpty {
                         FormErrorView(messages: messages)
+                    }
+                }
+                Section("Expenses") {
+                    List (transactions) { transaction in
+                        HStack {
+                            Text(transaction.title ?? "")
+                            Spacer()
+                            Text(transaction.total.toCurrency())
+                        }
                     }
                 }
             }.navigationTitle(category.title ?? "Budget Detail")
