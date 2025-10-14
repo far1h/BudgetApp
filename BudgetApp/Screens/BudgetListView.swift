@@ -13,34 +13,38 @@ struct BudgetListView: View {
     @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     
     var body: some View {
-        List {
-            ForEach(categories) { category in
-                NavigationLink(destination: Text("Hello World")) {
-                    BudgetCellView(category: category)
-                }
-            }
-        }.navigationTitle("Budget App")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        isPresentingAddBudgetView = true
+        // Wrap in NavigationStack to enable NavigationLink previews
+        NavigationStack {
+            List {
+                ForEach(categories) { category in
+                    NavigationLink {
+                        BudgetDetailView(category: category)
                     } label: {
-                        Text("Add")
+                        BudgetCellView(category: category)
                     }
-
+                    
                 }
-            }.sheet(isPresented: $isPresentingAddBudgetView) {
-                AddBudgetCategoryView()
-            }
+            }.navigationTitle("Budget App")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            isPresentingAddBudgetView = true
+                        } label: {
+                            Text("Add")
+                        }
+                        
+                    }
+                }.sheet(isPresented: $isPresentingAddBudgetView) {
+                    AddBudgetCategoryView()
+                }
+        }
     }
 }
 
 struct BudgetListView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            BudgetListView()
-                .environment(\.managedObjectContext, CoreDataManager.preview.context)
-        }
+        BudgetListView()
+            .environment(\.managedObjectContext, CoreDataManager.preview.context)
     }
 }
 

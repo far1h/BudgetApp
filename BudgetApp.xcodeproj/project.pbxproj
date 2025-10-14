@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9118A9622E9E066F007AC76A /* FormErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118A9612E9E066F007AC76A /* FormErrorView.swift */; };
 		9138F3732E9A78790096BEE9 /* BudgetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9138F3722E9A78790096BEE9 /* BudgetDetailView.swift */; };
 		9138F3752E9A81430096BEE9 /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9138F3742E9A81430096BEE9 /* TransactionListView.swift */; };
 		9138F3772E9A88220096BEE9 /* BudgetSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9138F3762E9A88220096BEE9 /* BudgetSummaryView.swift */; };
@@ -20,9 +21,11 @@
 		91DCD84D2E9A035F006C1A29 /* AddBudgetCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */; };
 		91F7FD3A2E9DE07900E5A439 /* BudgetCategory+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */; };
 		91F7FD3C2E9DE47D00E5A439 /* BudgetCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD3B2E9DE47D00E5A439 /* BudgetCellView.swift */; };
+		91F7FD3E2E9E01E200E5A439 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD3D2E9E01E200E5A439 /* ButtonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9118A9612E9E066F007AC76A /* FormErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormErrorView.swift; sourceTree = "<group>"; };
 		9138F3722E9A78790096BEE9 /* BudgetDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetDetailView.swift; sourceTree = "<group>"; };
 		9138F3742E9A81430096BEE9 /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
 		9138F3762E9A88220096BEE9 /* BudgetSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetSummaryView.swift; sourceTree = "<group>"; };
@@ -38,6 +41,7 @@
 		91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBudgetCategoryView.swift; sourceTree = "<group>"; };
 		91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BudgetCategory+Extensions.swift"; sourceTree = "<group>"; };
 		91F7FD3B2E9DE47D00E5A439 /* BudgetCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetCellView.swift; sourceTree = "<group>"; };
+		91F7FD3D2E9E01E200E5A439 /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,10 +115,11 @@
 		91AE18792E9960EC009A7E1F /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				9138F3722E9A78790096BEE9 /* BudgetDetailView.swift */,
 				9138F3742E9A81430096BEE9 /* TransactionListView.swift */,
 				9138F3762E9A88220096BEE9 /* BudgetSummaryView.swift */,
 				91F7FD3B2E9DE47D00E5A439 /* BudgetCellView.swift */,
+				91F7FD3D2E9E01E200E5A439 /* ButtonView.swift */,
+				9118A9612E9E066F007AC76A /* FormErrorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -124,6 +129,7 @@
 			children = (
 				9161FAC02E99ED6D0049B31C /* BudgetListView.swift */,
 				91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */,
+				9138F3722E9A78790096BEE9 /* BudgetDetailView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -199,7 +205,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				91F7FD3C2E9DE47D00E5A439 /* BudgetCellView.swift in Sources */,
+				9118A9622E9E066F007AC76A /* FormErrorView.swift in Sources */,
 				9161FAC12E99ED6D0049B31C /* BudgetListView.swift in Sources */,
+				91F7FD3E2E9E01E200E5A439 /* ButtonView.swift in Sources */,
 				91AE18612E995610009A7E1F /* BudgetAppApp.swift in Sources */,
 				91DCD84D2E9A035F006C1A29 /* AddBudgetCategoryView.swift in Sources */,
 				917471B12E996C980080FCAA /* Double+Extensions.swift in Sources */,

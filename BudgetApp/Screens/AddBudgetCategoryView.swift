@@ -47,6 +47,7 @@ struct AddBudgetCategoryView: View {
     }
     
     private func saveOrUpdate() {
+        guard isFormValid else { return }
         if let category = categoryToEdit {
             // Update existing category
             category.title = title
@@ -76,26 +77,9 @@ struct AddBudgetCategoryView: View {
             TextField("Title", text: $title)
             TextField("Total", text: $total)
                 .keyboardType(.decimalPad)
-            Button {
-                if isFormValid {
-                    saveOrUpdate()
-                }
-            } label: {
-                Text(categoryToEdit == nil ? "Save Category" : "Update Category")
-                    .frame(maxWidth: .infinity, alignment: .center)
-            }
-            .frame(maxWidth: .infinity)
-            .buttonStyle(.borderedProminent)
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
-            .padding(.top)
+            ButtonView(onClick: saveOrUpdate, buttonTitle: categoryToEdit == nil ? "Add Category" : "Update Category")
             if !messages.isEmpty {
-                Text("* " + messages.joined(separator: " "))
-                    .foregroundColor(.red)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                
+                FormErrorView(messages: messages)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
