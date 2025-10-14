@@ -13,3 +13,11 @@ Steps taken to implement:
 7. Fetch BudgetCategory entities using @FetchRequest property wrapper to display them in a list.
 8. Implement delete functionality to remove BudgetCategory entities from Core Data. This involves deleting the object from the context and saving the changes.
 9. Add `Transaction` entity with attributes `title` (Non-optional String), `total` (Non-optional Double), `dateCreated` (Non-optional Date), and a one to many relationship to `BudgetCategory`. For each BudgetCategory, there can be multiple Transactions, but each Transaction belongs to one BudgetCategory. 
+
+## Core Data Notes
+
+1. Fetching Data with no Sort Descriptors:
+```swift
+@FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
+
+```
