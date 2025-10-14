@@ -19,5 +19,39 @@ Steps taken to implement:
 1. Fetching Data with no Sort Descriptors:
 ```swift
 @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
-
+```
+2. Fetching Data with Sort Descriptors:
+```swift
+@FetchRequest(sortDescriptors: [SortDescriptor(\.dateCreated, order: .reverse)])
+private var categories: FetchedResults<BudgetCategory>
+```
+3. Creating a new entity:
+```swift
+let newItem = CoreDataItem(context: viewContext)
+newItem.attributes = value
+do {
+    try viewContext.save()
+} catch {
+    // Handle the error
+}
+```
+4. Deleting an entity:
+```swift
+let itemToDelete = items[index]
+viewContext.delete(itemToDelete)
+do {
+    try viewContext.save()
+} catch {
+    // Handle the error
+}
+```
+5. Updating an entity:
+```swift
+let itemToUpdate = items[index]
+itemToUpdate.attributes = newValue
+do {
+    try viewContext.save()
+} catch {
+    // Handle the error
+}
 ```
