@@ -9,6 +9,6 @@ import Foundation
 
 extension Double {
     func toCurrency() -> String {
-        return self.formatted(.currency(code: "IDR"))
+        return self.formatted(.currency(code: Locale.current.currency?.identifier ?? "USD"))
     }
 }

@@ -23,11 +23,20 @@ struct AddBudgetCategoryView: View {
         if title.isEmpty {
             messages.append("Title is required.")
         }
-//        else if title.isDuplicate(in: viewContext, excluding: categoryToEdit) {
-//            messages.append("Title must be unique.")
-//        }
-            
-
+        
+        if let category = categoryToEdit {
+            // If editing, allow same title
+            if title != category.title, BudgetCategory.exists(title: title, in: viewContext) {
+                messages.append("Title must be unique.")
+            }
+        } else {
+            // If adding new, check for uniqueness
+            if BudgetCategory.exists(title: title, in: viewContext) {
+                messages.append("Title must be unique.")
+            }
+        }
+        
+        
         if total.isEmpty {
             messages.append("Total is required.")
         } else if Double(total) == nil || (Double(total) ?? 0) <= 0 {
@@ -38,6 +47,7 @@ struct AddBudgetCategoryView: View {
     }
     
     private func saveOrUpdate() {
+        guard isFormValid else { return }
         if let category = categoryToEdit {
             // Update existing category
             category.title = title
@@ -45,6 +55,7 @@ struct AddBudgetCategoryView: View {
         } else {
             // Add new category
             let newCategory = BudgetCategory(context: viewContext)
+            newCategory.dateCreated = Date()
             newCategory.title = title
             newCategory.total = Double(total)!
         }
@@ -57,47 +68,30 @@ struct AddBudgetCategoryView: View {
     }
     
     var body: some View {
-            Form {
-                Text("Add Budget Category")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                TextField("Title", text: $title)
-                TextField("Total", text: $total)
-                    .keyboardType(.decimalPad)
-                Button {
-                    if isFormValid {
-                        saveOrUpdate()
-                    }
-                } label: {
-                    Text(categoryToEdit == nil ? "Save Category" : "Update Category")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .frame(maxWidth: .infinity)
-                .buttonStyle(.borderedProminent)
+        Form {
+            Text("Add Budget Category")
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .center)
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
-                .padding(.top)
-                if !messages.isEmpty {
-                                            Text("* " + messages.joined(separator: " "))
-                            .foregroundColor(.red)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
-                   
-                }
+            TextField("Title", text: $title)
+            TextField("Total", text: $total)
+                .keyboardType(.decimalPad)
+            ButtonView(onClick: saveOrUpdate, buttonTitle: categoryToEdit == nil ? "Add Category" : "Update Category")
+            if !messages.isEmpty {
+                FormErrorView(messages: messages)
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                if let category = categoryToEdit {
-                    title = category.title ?? ""
-                    total = String(category.total)
-                }
-                //show a smallr sheet
-            }.presentationDetents([.fraction(0.4)])
-                
-                }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            if let category = categoryToEdit {
+                title = category.title ?? ""
+                total = String(category.total)
+            }
+            //show a smallr sheet
+        }.presentationDetents([.fraction(0.4)])
+        
+    }
 }
 
 struct AddBudgetCategoryView_Previews: PreviewProvider {

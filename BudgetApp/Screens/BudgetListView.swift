@@ -12,41 +12,60 @@ struct BudgetListView: View {
     @State private var isPresentingAddBudgetView: Bool = false
     @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    private func deleteBudgetCategory(indexSet: IndexSet) {
+        indexSet.forEach { index in
+            let category = categories[index]
+            viewContext.delete(category)
+        }
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error deleting category: \(error)")
+        }
+    }
+    
     var body: some View {
-        List {
-            ForEach(categories) { category in
-                NavigationLink(destination: Text("Hello World")) {
-                    HStack {
-                        VStack(alignment: .leading) {
+        // Wrap in NavigationStack to enable NavigationLink previews
+        NavigationStack {
+            List {
+                ForEach(categories) { category in
+                    NavigationLink {
+                        BudgetDetailView(category: category)
+                    } label: {
+                        HStack {
                             Text(category.title ?? "No Title")
                                 .font(.headline)
-                            Text("Total: \(category.total.toCurrency())")
+                            Spacer()
+                            Text(category.total.toCurrency())
                                 .font(.subheadline)
                         }
                     }
                 }
-            }
-        }.navigationTitle("Budget App")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        isPresentingAddBudgetView = true
-                    } label: {
-                        Text("Add")
+                .onDelete(perform: deleteBudgetCategory)
+            }.navigationTitle("Budget App")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            isPresentingAddBudgetView = true
+                        } label: {
+                            Text("Add")
+                        }
+                        
                     }
-
+                }.sheet(isPresented: $isPresentingAddBudgetView) {
+                    AddBudgetCategoryView()
                 }
-            }.sheet(isPresented: $isPresentingAddBudgetView) {
-                AddBudgetCategoryView()
-            }
+        }
     }
 }
 
 struct BudgetListView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            BudgetListView()
-                .environment(\.managedObjectContext, CoreDataManager.preview.context)
-        }
+        BudgetListView()
+            .environment(\.managedObjectContext, CoreDataManager.preview.context)
     }
 }
+
+
