@@ -19,6 +19,7 @@
 		91AE18712E99566D009A7E1F /* BudgetModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 91AE186F2E99566D009A7E1F /* BudgetModel.xcdatamodeld */; };
 		91AE18782E995DBE009A7E1F /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AE18772E995DBE009A7E1F /* CoreDataManager.swift */; };
 		91DCD84D2E9A035F006C1A29 /* AddBudgetCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */; };
+		91F7FD3A2E9DE07900E5A439 /* BudgetCategory+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		91AE18702E99566D009A7E1F /* BudgetModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BudgetModel.xcdatamodel; sourceTree = "<group>"; };
 		91AE18772E995DBE009A7E1F /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBudgetCategoryView.swift; sourceTree = "<group>"; };
+		91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BudgetCategory+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				917471B02E996C980080FCAA /* Double+Extensions.swift */,
+				91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 				9138F3732E9A78790096BEE9 /* BudgetDetailView.swift in Sources */,
 				9138F3752E9A81430096BEE9 /* TransactionListView.swift in Sources */,
 				91AE18782E995DBE009A7E1F /* CoreDataManager.swift in Sources */,
+				91F7FD3A2E9DE07900E5A439 /* BudgetCategory+Extensions.swift in Sources */,
 				91AE18712E99566D009A7E1F /* BudgetModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
