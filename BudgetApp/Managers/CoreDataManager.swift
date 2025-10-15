@@ -16,7 +16,7 @@ class CoreDataManager {
     
     private init(inMemory: Bool = false) {
         persistentContainer = NSPersistentContainer(name: "BudgetModel")
-
+        
         if inMemory {
             persistentContainer.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
@@ -26,6 +26,26 @@ class CoreDataManager {
                 fatalError("Unable to load persistent stores: \(error)")
             }
         }
+        
+        let hasSeedDataKey = "hasSeedData"
+        if !UserDefaults.standard.bool(forKey: hasSeedDataKey) {
+            do {
+                try seedInitialData(["Food", "Transport", "Entertainment", "Utilities", "Health", "Shopping", "Education", "Travel", "Miscellaneous"])
+                UserDefaults.standard.set(true, forKey: hasSeedDataKey)
+            } catch {
+                print("Error seeding initial data: \(error)")
+            }
+            
+        }
+    }
+    
+    func seedInitialData(_ commonTags: [String]) throws {
+        for tag in commonTags {
+            let newTagItem = Tag(context: context)
+            newTagItem.name = tag
+        }
+        
+        try context.save()
     }
     
     static var preview: CoreDataManager = {
