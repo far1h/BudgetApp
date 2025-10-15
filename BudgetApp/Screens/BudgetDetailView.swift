@@ -18,6 +18,7 @@ struct BudgetDetailView: View {
     @State private var total: String = ""
     @State private var messages: [String] = []
     @State private var isPresentingEditBudgetView: Bool = false
+    @State private var selectedTags: Set<Tag> = []
     
     @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
     
@@ -38,7 +39,9 @@ struct BudgetDetailView: View {
         if total.isEmpty || Double(total) == nil || (Double(total) ?? 0) <= 0 {
             messages.append("Total must be a valid number greater than zero.")
         }
-        
+        if selectedTags.isEmpty {
+            messages.append("At least one tag must be selected.")
+        }
         return messages.isEmpty
     }
     
@@ -48,6 +51,7 @@ struct BudgetDetailView: View {
         newTransaction.title = title
         newTransaction.total = Double(total)!
         newTransaction.dateCreated = Date()
+        newTransaction.tags = selectedTags as NSSet
         
         // available after setting budget category relationship one to many
         category.addToTransactions(newTransaction)
@@ -57,6 +61,7 @@ struct BudgetDetailView: View {
             // Reset form
             title = ""
             total = ""
+            selectedTags.removeAll()
             print("Transaction added successfully.")
         } catch {
             print("Failed to save transaction: \(error)")
@@ -98,6 +103,7 @@ struct BudgetDetailView: View {
                     TextField("Title", text: $title)
                     TextField("Total", text: $total)
                         .keyboardType(.decimalPad)
+                    TagsView(selectedTags: $selectedTags)
                     ButtonView(onClick: addTransaction, buttonTitle: "Add Expense")
                     if !messages.isEmpty {
                         FormErrorView(messages: messages)
