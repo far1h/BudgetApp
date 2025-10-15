@@ -114,11 +114,7 @@ struct BudgetDetailView: View {
                 Section("Expenses") {
                     List {
                             ForEach (transactions) { transaction in
-                                HStack {
-                                    Text(transaction.title ?? "")
-                                    Spacer()
-                                    Text(transaction.total.toCurrency())
-                                }
+                                TransactionCellView(transaction: transaction)
                             }.onDelete(perform: deleteTransaction)
                             HStack {
                                 Text("Total Spent")

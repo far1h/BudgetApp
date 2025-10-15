@@ -20,6 +20,7 @@
 		91DCD84D2E9A035F006C1A29 /* AddBudgetCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */; };
 		91F7FD3A2E9DE07900E5A439 /* BudgetCategory+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */; };
 		91F7FD3E2E9E01E200E5A439 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD3D2E9E01E200E5A439 /* ButtonView.swift */; };
+		91FF0D612E9FACAE0073FF78 /* TransactionCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FF0D602E9FACAE0073FF78 /* TransactionCellView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBudgetCategoryView.swift; sourceTree = "<group>"; };
 		91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BudgetCategory+Extensions.swift"; sourceTree = "<group>"; };
 		91F7FD3D2E9E01E200E5A439 /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
+		91FF0D602E9FACAE0073FF78 /* TransactionCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCellView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 				91F7FD3D2E9E01E200E5A439 /* ButtonView.swift */,
 				9118A9612E9E066F007AC76A /* FormErrorView.swift */,
 				91A7C9B02E9F9F0A001C603F /* TagsView.swift */,
+				91FF0D602E9FACAE0073FF78 /* TransactionCellView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -207,6 +210,7 @@
 				9138F3732E9A78790096BEE9 /* BudgetDetailView.swift in Sources */,
 				91AE18782E995DBE009A7E1F /* CoreDataManager.swift in Sources */,
 				91F7FD3A2E9DE07900E5A439 /* BudgetCategory+Extensions.swift in Sources */,
+				91FF0D612E9FACAE0073FF78 /* TransactionCellView.swift in Sources */,
 				91A7C9B12E9F9F0A001C603F /* TagsView.swift in Sources */,
 				91AE18712E99566D009A7E1F /* BudgetModel.xcdatamodeld in Sources */,
 			);

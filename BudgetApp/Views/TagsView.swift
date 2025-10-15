@@ -31,7 +31,6 @@ struct TagsView: View {
                         }
                 }
             }
-            .padding()
         }
     }
 }
