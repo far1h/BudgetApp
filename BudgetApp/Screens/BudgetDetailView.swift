@@ -13,20 +13,24 @@ import CoreData
 struct BudgetDetailView: View {
     
     let category: BudgetCategory
+    let onDeleteCategory: (BudgetCategory) -> Void
     
     @State private var title: String = ""
     @State private var total: String = ""
     @State private var messages: [String] = []
+    @State private var isPresentingEditBudgetView: Bool = false
+    @State private var selectedTags: Set<Tag> = []
     
     @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
     
-    init(category: BudgetCategory) {
+    init(category: BudgetCategory, onDeleteCategory: @escaping (BudgetCategory) -> Void) {
         self.category = category
         _transactions = FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "category == %@", category))
-            
+        self.onDeleteCategory = onDeleteCategory
         }
     
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) private var dismiss
     
     private var isFormValid: Bool {
         messages.removeAll()
@@ -37,7 +41,9 @@ struct BudgetDetailView: View {
         if total.isEmpty || Double(total) == nil || (Double(total) ?? 0) <= 0 {
             messages.append("Total must be a valid number greater than zero.")
         }
-        
+        if selectedTags.isEmpty {
+            messages.append("At least one tag must be selected.")
+        }
         return messages.isEmpty
     }
     
@@ -47,6 +53,7 @@ struct BudgetDetailView: View {
         newTransaction.title = title
         newTransaction.total = Double(total)!
         newTransaction.dateCreated = Date()
+        newTransaction.tags = selectedTags as NSSet
         
         // available after setting budget category relationship one to many
         category.addToTransactions(newTransaction)
@@ -56,6 +63,7 @@ struct BudgetDetailView: View {
             // Reset form
             title = ""
             total = ""
+            selectedTags.removeAll()
             print("Transaction added successfully.")
         } catch {
             print("Failed to save transaction: \(error)")
@@ -97,6 +105,7 @@ struct BudgetDetailView: View {
                     TextField("Title", text: $title)
                     TextField("Total", text: $total)
                         .keyboardType(.decimalPad)
+                    TagsView(selectedTags: $selectedTags)
                     ButtonView(onClick: addTransaction, buttonTitle: "Add Expense")
                     if !messages.isEmpty {
                         FormErrorView(messages: messages)
@@ -105,11 +114,7 @@ struct BudgetDetailView: View {
                 Section("Expenses") {
                     List {
                             ForEach (transactions) { transaction in
-                                HStack {
-                                    Text(transaction.title ?? "")
-                                    Spacer()
-                                    Text(transaction.total.toCurrency())
-                                }
+                                TransactionCellView(transaction: transaction)
                             }.onDelete(perform: deleteTransaction)
                             HStack {
                                 Text("Total Spent")
@@ -123,6 +128,26 @@ struct BudgetDetailView: View {
                     }
                 }
             }.navigationTitle(category.title ?? "Budget Detail")
+            .sheet(isPresented: $isPresentingEditBudgetView) {
+                AddBudgetCategoryView(categoryToEdit: category)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack{
+                        Button {
+                            isPresentingEditBudgetView = true
+                        } label: {
+                            Image(systemName: "pencil")
+                        }
+                        Button {
+                            // TODO: show confirmation alert before deleting
+                            onDeleteCategory(category)
+                        } label: {
+                            Image(systemName: "trash")
+                        }
+                    }
+                }
+            }
         }
 }
 
@@ -131,8 +156,10 @@ struct BudgetDetailViewContainer: View {
 
     @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     
+    
     var body: some View {
-        BudgetDetailView(category: categories.first(where: { $0.title == "Groceries" }) ?? categories[0])
+        BudgetDetailView(category: categories.first(where: { $0.title == "Groceries" }) ?? categories[0], onDeleteCategory: { _ in })
+            .environment(\.managedObjectContext, CoreDataManager.preview.context)
     }
 }
 

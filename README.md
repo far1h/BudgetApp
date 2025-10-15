@@ -78,6 +78,7 @@ do {
  
 let category = categories[index]
 let transactions = category.transactions?.allObjects as? [Transaction] ?? []
+// or let transactions = Array(category.transactions as? Set<Transaction> ?? [])
 
 // Better approach is to use a separate FetchRequest for transactions filtered by the selected category
 

@@ -16,7 +16,7 @@ class CoreDataManager {
     
     private init(inMemory: Bool = false) {
         persistentContainer = NSPersistentContainer(name: "BudgetModel")
-
+        
         if inMemory {
             persistentContainer.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
@@ -26,6 +26,26 @@ class CoreDataManager {
                 fatalError("Unable to load persistent stores: \(error)")
             }
         }
+        
+        if !UserDefaults.standard.bool(forKey: "hasSeedData") {
+            do {
+                try seedInitialData(["Food", "Transport", "Entertainment", "Utilities", "Health", "Shopping", "Education", "Travel", "Miscellaneous"])
+                UserDefaults.standard.set(true, forKey: "hasSeedData")
+                print("Initial data seeded.")
+            } catch {
+                print("Error seeding initial data: \(error)")
+            }
+            
+        }
+    }
+    
+    func seedInitialData(_ commonTags: [String]) throws {
+        for tag in commonTags {
+            let newTagItem = Tag(context: context)
+            newTagItem.title = tag
+        }
+        
+        try context.save()
     }
     
     static var preview: CoreDataManager = {
@@ -62,7 +82,16 @@ class CoreDataManager {
         transaction3.total = 20.0
         groceries.addToTransactions(transaction3)
         
+        
         do {
+            try manager.seedInitialData(["Food", "Transport", "Entertainment", "Utilities", "Health", "Shopping", "Education", "Travel", "Miscellaneous"])
+            for tags in try context.fetch(Tag.fetchRequest()) as! [Tag] {
+                transaction1.addToTags(tags)
+                transaction2.addToTags(tags)
+                transaction3.addToTags(tags)
+                print("Tag added to transaction: \(tags.title ?? "")")
+            }
+            
             try context.save()
         } catch {
             fatalError("Failed to save preview data: \(error)")

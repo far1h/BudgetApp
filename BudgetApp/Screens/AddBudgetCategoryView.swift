@@ -16,6 +16,7 @@ struct AddBudgetCategoryView: View {
     @State private var messages: [String] = []
     
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) private var dismiss
     
     private var isFormValid: Bool {
         messages.removeAll()
@@ -62,6 +63,7 @@ struct AddBudgetCategoryView: View {
         
         do {
             try viewContext.save()
+            dismiss()
         } catch {
             print("Failed to save category: \(error)")
         }
@@ -69,7 +71,7 @@ struct AddBudgetCategoryView: View {
     
     var body: some View {
         Form {
-            Text("Add Budget Category")
+            Text(categoryToEdit == nil ? "Add Budget Category" : "Edit Budget Category")
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .listRowSeparator(.hidden)
