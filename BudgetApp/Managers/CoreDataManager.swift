@@ -85,6 +85,13 @@ class CoreDataManager {
         
         do {
             try manager.seedInitialData(["Food", "Transport", "Entertainment", "Utilities", "Health", "Shopping", "Education", "Travel", "Miscellaneous"])
+            for tags in try context.fetch(Tag.fetchRequest()) as! [Tag] {
+                transaction1.addToTags(tags)
+                transaction2.addToTags(tags)
+                transaction3.addToTags(tags)
+                print("Tag added to transaction: \(tags.title ?? "")")
+            }
+            
             try context.save()
         } catch {
             fatalError("Failed to save preview data: \(error)")

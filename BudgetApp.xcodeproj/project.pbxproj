@@ -21,6 +21,7 @@
 		91F7FD3A2E9DE07900E5A439 /* BudgetCategory+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */; };
 		91F7FD3E2E9E01E200E5A439 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F7FD3D2E9E01E200E5A439 /* ButtonView.swift */; };
 		91FF0D612E9FACAE0073FF78 /* TransactionCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FF0D602E9FACAE0073FF78 /* TransactionCellView.swift */; };
+		91FF0D632E9FAD540073FF78 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FF0D622E9FAD540073FF78 /* FilterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		91F7FD392E9DE07900E5A439 /* BudgetCategory+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BudgetCategory+Extensions.swift"; sourceTree = "<group>"; };
 		91F7FD3D2E9E01E200E5A439 /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 		91FF0D602E9FACAE0073FF78 /* TransactionCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCellView.swift; sourceTree = "<group>"; };
+		91FF0D622E9FAD540073FF78 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 				9161FAC02E99ED6D0049B31C /* BudgetListView.swift */,
 				91DCD84C2E9A035F006C1A29 /* AddBudgetCategoryView.swift */,
 				9138F3722E9A78790096BEE9 /* BudgetDetailView.swift */,
+				91FF0D622E9FAD540073FF78 /* FilterView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -201,6 +204,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91FF0D632E9FAD540073FF78 /* FilterView.swift in Sources */,
 				9118A9622E9E066F007AC76A /* FormErrorView.swift in Sources */,
 				9161FAC12E99ED6D0049B31C /* BudgetListView.swift in Sources */,
 				91F7FD3E2E9E01E200E5A439 /* ButtonView.swift in Sources */,
