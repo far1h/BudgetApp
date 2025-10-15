@@ -17,14 +17,19 @@ struct BudgetListView: View {
     private func deleteBudgetCategory(indexSet: IndexSet) {
         indexSet.forEach { index in
             let category = categories[index]
-            viewContext.delete(category)
+            deleteCategoryItem(category)
         }
+    }
+    
+    private func deleteCategoryItem(_ category: BudgetCategory) {
+        viewContext.delete(category)
         do {
             try viewContext.save()
         } catch {
-            print("Error deleting category: \(error)")
+            print("Error deleting category: \(error.localizedDescription)")
         }
-    }
+    }          
+            
     
     var body: some View {
         // Wrap in NavigationStack to enable NavigationLink previews
@@ -32,7 +37,7 @@ struct BudgetListView: View {
             List {
                 ForEach(categories) { category in
                     NavigationLink {
-                        BudgetDetailView(category: category)
+                        BudgetDetailView(category: category, onDeleteCategory: deleteCategoryItem)
                     } label: {
                         HStack {
                             Text(category.title ?? "No Title")

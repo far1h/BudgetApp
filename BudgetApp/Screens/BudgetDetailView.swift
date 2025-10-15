@@ -13,6 +13,7 @@ import CoreData
 struct BudgetDetailView: View {
     
     let category: BudgetCategory
+    let onDeleteCategory: (BudgetCategory) -> Void
     
     @State private var title: String = ""
     @State private var total: String = ""
@@ -22,13 +23,14 @@ struct BudgetDetailView: View {
     
     @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
     
-    init(category: BudgetCategory) {
+    init(category: BudgetCategory, onDeleteCategory: @escaping (BudgetCategory) -> Void) {
         self.category = category
         _transactions = FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "category == %@", category))
-            
+        self.onDeleteCategory = onDeleteCategory
         }
     
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) private var dismiss
     
     private var isFormValid: Bool {
         messages.removeAll()
@@ -135,10 +137,18 @@ struct BudgetDetailView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        isPresentingEditBudgetView = true
-                    } label: {
-                        Text("Edit")
+                    HStack{
+                        Button {
+                            isPresentingEditBudgetView = true
+                        } label: {
+                            Image(systemName: "pencil")
+                        }
+                        Button {
+                            // TODO: show confirmation alert before deleting
+                            onDeleteCategory(category)
+                        } label: {
+                            Image(systemName: "trash")
+                        }
                     }
                 }
             }
@@ -150,8 +160,10 @@ struct BudgetDetailViewContainer: View {
 
     @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     
+    
     var body: some View {
-        BudgetDetailView(category: categories.first(where: { $0.title == "Groceries" }) ?? categories[0])
+        BudgetDetailView(category: categories.first(where: { $0.title == "Groceries" }) ?? categories[0], onDeleteCategory: { _ in })
+            .environment(\.managedObjectContext, CoreDataManager.preview.context)
     }
 }
 
