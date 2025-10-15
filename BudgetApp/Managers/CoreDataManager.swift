@@ -27,11 +27,11 @@ class CoreDataManager {
             }
         }
         
-        let hasSeedDataKey = "hasSeedData"
-        if !UserDefaults.standard.bool(forKey: hasSeedDataKey) {
+        if !UserDefaults.standard.bool(forKey: "hasSeedData") {
             do {
                 try seedInitialData(["Food", "Transport", "Entertainment", "Utilities", "Health", "Shopping", "Education", "Travel", "Miscellaneous"])
-                UserDefaults.standard.set(true, forKey: hasSeedDataKey)
+                UserDefaults.standard.set(true, forKey: "hasSeedData")
+                print("Initial data seeded.")
             } catch {
                 print("Error seeding initial data: \(error)")
             }
@@ -42,7 +42,7 @@ class CoreDataManager {
     func seedInitialData(_ commonTags: [String]) throws {
         for tag in commonTags {
             let newTagItem = Tag(context: context)
-            newTagItem.name = tag
+            newTagItem.title = tag
         }
         
         try context.save()
@@ -82,7 +82,9 @@ class CoreDataManager {
         transaction3.total = 20.0
         groceries.addToTransactions(transaction3)
         
+        
         do {
+            try manager.seedInitialData(["Food", "Transport", "Entertainment", "Utilities", "Health", "Shopping", "Education", "Travel", "Miscellaneous"])
             try context.save()
         } catch {
             fatalError("Failed to save preview data: \(error)")
