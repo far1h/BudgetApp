@@ -97,7 +97,22 @@ init(category: BudgetCategory) {
 }
 ```
 
-8. Filtering with String predicates:
+8. Filling many-to-many relationships using NSSet:
+```swift
+let selectedTags: Set<Tag> = [...] // Your set of selected Tag objects 
+let newTransaction = Transaction(context: viewContext)
+
+newTransaction.title = "Sample Transaction"
+newTransaction.tags = selectedTags as NSSet
+do {
+    try viewContext.save()
+} catch {
+    // Handle the error
+}
+```
+
+
+9. Filtering with String predicates:
 ```swift
 // Assuming you have a list of tags and you want to fetch transactions that have any of those tags
 var filteredTransactions: [Transaction] = []
@@ -117,18 +132,20 @@ do {
 } catch {
     print("Error fetching filtered transactions: \(error)")
 }
-
 ```
-9. Filling many-to-many relationships using NSSet:
-```swift
-let selectedTags: Set<Tag> = [...] // Your set of selected Tag objects 
-let newTransaction = Transaction(context: viewContext)
 
-newTransaction.title = "Sample Transaction"
-newTransaction.tags = selectedTags as NSSet
+10. Filtering by number range:
+```swift
+let minAmount: Double = 50.0
+let maxAmount: Double = 200.0
+
+let fetchRequest = Transaction.fetchRequest()
+// fetchRequest.predicate = NSPredicate(format: "total >= %@ AND total <= %@", NSNumber(value: minAmount), NSNumber(value: maxAmount))
+fetchRequest.predicate = NSPredicate(format: "total >= %f AND total <= %f", minAmount, maxAmount)
 do {
-    try viewContext.save()
+    let filteredTransactions = try viewContext.fetch(fetchRequest)
+    print("Filtered Transactions: \(filteredTransactions)")
 } catch {
-    // Handle the error
+    print("Error fetching filtered transactions: \(error)")
 }
 ```
