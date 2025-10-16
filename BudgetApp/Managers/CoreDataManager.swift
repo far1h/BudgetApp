@@ -86,9 +86,24 @@ class CoreDataManager {
         do {
             try manager.seedInitialData(["Food", "Transport", "Entertainment", "Utilities", "Health", "Shopping", "Education", "Travel", "Miscellaneous"])
             for tags in try context.fetch(Tag.fetchRequest()) as! [Tag] {
-                transaction1.addToTags(tags)
-                transaction2.addToTags(tags)
-                transaction3.addToTags(tags)
+                if tags.title == "Food" {
+                    transaction2.addToTags(tags)
+                    transaction3.addToTags(tags)
+                    
+                    let foodItems = ["Chicken", "Rice", "Vegetables"]
+                    
+                    for item in foodItems {
+                        let foodTransaction = Transaction(context: context)
+                        foodTransaction.dateCreated = Date()
+                        foodTransaction.title = item
+                        foodTransaction.total = Double.random(in: 10...100)
+                        groceries.addToTransactions(foodTransaction)
+//                        foodTransaction.addToTags(tags)
+                    }
+                    
+                } else if tags.title == "Entertainment" {
+                    transaction1.addToTags(tags)
+                }
                 print("Tag added to transaction: \(tags.title ?? "")")
             }
             

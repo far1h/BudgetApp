@@ -13,7 +13,14 @@ struct FilterView: View {
     @State private var selectedTags: Set<Tag> = []
     @State private var filteredTransactions: [Transaction] = []
     
+    @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
+    
     func filterTags(_ tags: Set<Tag>) {
+        if tags.isEmpty {
+            filteredTransactions.removeAll()
+            filteredTransactions = Array(transactions)
+            return
+        }
         let tagTitles = tags.compactMap { $0.title }
         
         let fetchRequest = Transaction.fetchRequest()
@@ -33,12 +40,19 @@ struct FilterView: View {
             Section( "Filter by Tags") {
                 TagsView(selectedTags: $selectedTags)
                     .onChange(of: selectedTags, perform: filterTags)
-                Spacer()
                 List {
                     ForEach(filteredTransactions) { transaction in
                         TransactionCellView(transaction: transaction)
                     }
                 }.listStyle(.plain)
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button("Clear Filters") {
+                        selectedTags.removeAll()
+                    }
+                    Spacer()
+                }
 
             }
         }.padding()
