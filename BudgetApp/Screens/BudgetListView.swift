@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BudgetListView: View {
     
+    @State private var isPresentingFilterView: Bool = false
     @State private var isPresentingAddBudgetView: Bool = false
     @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     
@@ -30,25 +31,52 @@ struct BudgetListView: View {
         }
     }          
             
+    private var totalBudget: Double {
+        categories.reduce(0) { $0 + $1.total }
+    }
     
     var body: some View {
         // Wrap in NavigationStack to enable NavigationLink previews
         NavigationStack {
-            List {
-                ForEach(categories) { category in
-                    NavigationLink {
-                        BudgetDetailView(category: category, onDeleteCategory: deleteCategoryItem)
-                    } label: {
-                        HStack {
-                            Text(category.title ?? "No Title")
-                                .font(.headline)
-                            Spacer()
-                            Text(category.total.toCurrency())
-                                .font(.subheadline)
+            VStack {
+                if categories.isEmpty {
+                    Image(systemName: "chart.pie.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .foregroundStyle(.blue.gradient)
+                        .padding()
+                    Text("No Budget Categories. Please add a budget category.")
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    
+                } else {
+                    List {
+                        VStack (alignment: .center, spacing: 5) {
+                            Text("Total Budget")
+                                .font(.title2)
+                                .bold()
+                            Text(totalBudget.toCurrency())
+                                .font(.largeTitle)
+                                .bold()
+                                .padding(.bottom, 5)
+                        }.frame(maxWidth: .infinity, alignment: .center)
+                        .listRowSeparator(.hidden)
+                        Section("Budget Categories") {
+                            ForEach(categories) { category in
+                                NavigationLink {
+                                    BudgetDetailView(category: category, onDeleteCategory: deleteCategoryItem)
+                                } label: {
+                                    HStack {
+                                        Text(category.title ?? "No Title")
+                                        Spacer()
+                                        Text(category.total.toCurrency())
+                                    }
+                                }
+                            }.onDelete(perform: deleteBudgetCategory)
                         }
                     }
                 }
-                .onDelete(perform: deleteBudgetCategory)
             }.navigationTitle("Budget App")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -62,7 +90,14 @@ struct BudgetListView: View {
                 }.sheet(isPresented: $isPresentingAddBudgetView) {
                     AddBudgetCategoryView()
                 }
-        }
+                .sheet(isPresented: $isPresentingFilterView) {
+                    FilterView()
+                }
+        }.overlay(alignment: .bottom, content: {
+            Button("Filter") {
+                isPresentingFilterView = true
+            }.buttonStyle(.borderedProminent)
+        })
     }
 }
 
