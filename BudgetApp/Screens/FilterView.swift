@@ -108,95 +108,99 @@ struct FilterView: View {
     
         
     var body: some View {
-        List  {
-            
-            Section("Sort") {
-                Picker("Sort Options", selection: $sortOption) {
-                    Text("None").tag(SortOption?.none)
-                    ForEach(SortOption.allCases) { option in
-                        Text(option.rawValue).tag(option as SortOption?)
-                    }
-                }
-                    Picker("Sort Direction", selection: $sortDirection) {
-                    ForEach(SortDirection.allCases) { direction in
-                        Text(direction.rawValue).tag(direction)
-                    }
-                }
-            }
-            
-            Section( "Filter by Tags") {
-                TagsView(selectedTags: $selectedTags)
-            }
-            .listRowSeparator(.hidden)
-            
-            Section("Filter by Price Range") {
-                HStack {
-                    TextField("Min", text: $minPrice).keyboardType(.decimalPad)
-                    TextField("Max", text: $maxPrice)
-                        .keyboardType(.decimalPad)
-                }.textFieldStyle(RoundedBorderTextFieldStyle())
-            }
-            .listRowSeparator(.hidden)
-            
-            Section("Fiter by Title") {
-                HStack {
-                    TextField("Title contains...", text: $titleFilter)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                }
-            }
-            .listRowSeparator(.hidden)
-            
-            Section("Filter by Date Range") {
-                DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                DatePicker("End Date", selection: $endDate, displayedComponents: .date)
-            }
-            .listRowSeparator(.hidden)
-            
-            HStack {
+        NavigationStack {
+            List  {
                 
-                Button {
-                    performFilter()
-                } label: {
-                    Text("Apply Filters")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .buttonStyle(.borderedProminent)
-                
-                Button {
-                    // Clear all filters
-                    selectedTags.removeAll()
-                    minPrice = ""
-                    maxPrice = ""
-                    titleFilter = ""
-                    startDate = Calendar.current.startOfDay(for: Date())
-                    endDate = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: Date()) ?? Date()
-                    sortOption = nil
-                    sortDirection = .asc
-                    filteredTransactions = Array(transactions)
-                } label: {
-                    Text("Clear Filters")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .buttonStyle(.borderedProminent)
-            }
-            .listRowSeparator(.hidden)
-            .padding(.top, 16)
-            
-            if !filteredTransactions.isEmpty {
-                Section("Filtered Transactions") {
-                    ForEach(filteredTransactions) { transaction in
-                        TransactionCellView(transaction: transaction)
+                Section("Sort") {
+                    Picker("Sort Options", selection: $sortOption) {
+                        Text("None").tag(SortOption?.none)
+                        ForEach(SortOption.allCases) { option in
+                            Text(option.rawValue).tag(option as SortOption?)
+                        }
+                    }
+                        Picker("Sort Direction", selection: $sortDirection) {
+                        ForEach(SortDirection.allCases) { direction in
+                            Text(direction.rawValue).tag(direction)
+                        }
                     }
                 }
-//                .listRowSeparator(.hidden)
-                .listRowBackground(Color(.systemGray6))
+                
+                Section( "Filter by Tags") {
+                    TagsView(selectedTags: $selectedTags)
+                }
+                .listRowSeparator(.hidden)
+                
+                Section("Filter by Price Range") {
+                    HStack {
+                        TextField("Min", text: $minPrice).keyboardType(.decimalPad)
+                        TextField("Max", text: $maxPrice)
+                            .keyboardType(.decimalPad)
+                    }.textFieldStyle(RoundedBorderTextFieldStyle())
+                }
+                .listRowSeparator(.hidden)
+                
+                Section("Fiter by Title") {
+                    HStack {
+                        TextField("Title contains...", text: $titleFilter)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
+                }
+                .listRowSeparator(.hidden)
+                
+                Section("Filter by Date Range") {
+                    DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
+                    DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                }
+                .listRowSeparator(.hidden)
+                
+                HStack {
+                    
+                    Button {
+                        performFilter()
+                    } label: {
+                        Text("Apply Filters")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    
+                    Button {
+                        // Clear all filters
+                        selectedTags.removeAll()
+                        minPrice = ""
+                        maxPrice = ""
+                        titleFilter = ""
+                        startDate = Calendar.current.startOfDay(for: Date())
+                        endDate = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: Date()) ?? Date()
+                        sortOption = nil
+                        sortDirection = .asc
+                        filteredTransactions = Array(transactions)
+                    } label: {
+                        Text("Clear Filters")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .listRowSeparator(.hidden)
+                .padding(.top, 16)
+                
+                if !filteredTransactions.isEmpty {
+                    Section("Filtered Transactions") {
+                        ForEach(filteredTransactions) { transaction in
+                            TransactionCellView(transaction: transaction)
+                        }
+                    }
+    //                .listRowSeparator(.hidden)
+                    .listRowBackground(Color(.systemGray6))
+                }
             }
+            .onAppear {
+                // Initialize filteredTransactions with all transactions on appear
+                filteredTransactions = Array(transactions)
+            }
+        .listStyle(.plain)
+        .navigationTitle("Filter Transactions")
+        .navigationBarTitleDisplayMode(.inline)
         }
-        .onAppear {
-            // Initialize filteredTransactions with all transactions on appear
-            filteredTransactions = Array(transactions)
-        }
-            .listStyle(.plain)
     }
 }
 

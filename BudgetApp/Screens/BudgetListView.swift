@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BudgetListView: View {
     
+    @State private var isPresentingFilterView: Bool = false
     @State private var isPresentingAddBudgetView: Bool = false
     @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
     
@@ -50,6 +51,11 @@ struct BudgetListView: View {
                 }
                 .onDelete(perform: deleteBudgetCategory)
             }.navigationTitle("Budget App")
+                .overlay(alignment: .bottom, content: {
+                    Button("Filter") {
+                        isPresentingFilterView = true
+                    }.buttonStyle(.borderedProminent)
+                })
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
@@ -61,6 +67,9 @@ struct BudgetListView: View {
                     }
                 }.sheet(isPresented: $isPresentingAddBudgetView) {
                     AddBudgetCategoryView()
+                }
+                .sheet(isPresented: $isPresentingFilterView) {
+                    FilterView()
                 }
         }
     }
