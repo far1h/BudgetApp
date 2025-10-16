@@ -12,14 +12,16 @@ struct FilterView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var selectedTags: Set<Tag> = []
     @State private var filteredTransactions: [Transaction] = []
-    @State private var minPrice: Double?
-    @State private var maxPrice: Double?
+    @State private var minPrice: String = ""
+    @State private var maxPrice: String = ""
     
     
     @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
     
     func filterTags(_ tags: Set<Tag>) {
         if tags.isEmpty {
+            print("No tags selected, showing all transactions")
+            filteredTransactions = Array(transactions)
             return
         }
         let tagTitles = tags.compactMap { $0.title }
@@ -29,7 +31,6 @@ struct FilterView: View {
         
         do {
             filteredTransactions = try viewContext.fetch(fetchRequest)
-            print("Filtered Transactions: \(filteredTransactions)")
         } catch {
             print("Error fetching filtered transactions: \(error)")
         }
@@ -37,11 +38,10 @@ struct FilterView: View {
     }
     
     func filterByPriceRange() {
-        guard let minPrice = minPrice, let maxPrice = maxPrice else {
-            print("Min and Max price must be set")
+        guard let minPrice = Double(minPrice), let maxPrice = Double(maxPrice), minPrice <= maxPrice else {
+            print("Invalid price range")
             return
         }
-        
         let fetchRequest = Transaction.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "total >= %f AND total <= %f", minPrice, maxPrice)
         do {
@@ -60,17 +60,15 @@ struct FilterView: View {
             }
             Section("Filter by Price Range") {
                 HStack {
-                    TextField("Min", value: $minPrice, format: .number)
+                    TextField("Min", text: $minPrice).keyboardType(.decimalPad)
+                    TextField("Max", text: $maxPrice)
                         .keyboardType(.decimalPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                    TextField("Max", value: $maxPrice, format: .number)
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
                     Button("Apply") {
                         filterByPriceRange()
                     }
-                }
+                }.textFieldStyle(RoundedBorderTextFieldStyle())
             }
+            
             List {
                 ForEach(filteredTransactions) { transaction in
                     TransactionCellView(transaction: transaction)
@@ -81,6 +79,8 @@ struct FilterView: View {
                 Spacer()
                 Button("Clear Filters") {
                     selectedTags.removeAll()
+                    minPrice = ""
+                    maxPrice = ""
                     filterByPriceRange()
                     filteredTransactions.removeAll()
                     filteredTransactions = Array(transactions)
