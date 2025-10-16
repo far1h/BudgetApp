@@ -69,51 +69,60 @@ struct FilterView: View {
     }
     
     var body: some View {
-        VStack (alignment: .leading, spacing: 16) {
-            Section( "Filter by Tags") {
-                TagsView(selectedTags: $selectedTags)
-                    .onChange(of: selectedTags, perform: filterTags)
-            }
-            Section("Filter by Price Range") {
-                HStack {
-                    TextField("Min", text: $minPrice).keyboardType(.decimalPad)
-                    TextField("Max", text: $maxPrice)
-                        .keyboardType(.decimalPad)
-                    Button("Apply") {
-                        filterByPriceRange()
-                    }
-                }.textFieldStyle(RoundedBorderTextFieldStyle())
-            }
-            Section("Fiter by Title") {
-                HStack {
-                    TextField("Title contains...", text: $titleFilter)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                    Button("Apply") {
-                        filterByTitle()
-                    }
-                }
-            }
             List {
-                ForEach(filteredTransactions) { transaction in
-                    TransactionCellView(transaction: transaction)
+                Section( "Filter by Tags") {
+                    TagsView(selectedTags: $selectedTags)
+                        .onChange(of: selectedTags, perform: filterTags)
                 }
-            }.listStyle(.plain)
-            Spacer()
-            HStack {
-                Spacer()
-                Button("Clear Filters") {
-                    selectedTags.removeAll()
-                    minPrice = ""
-                    maxPrice = ""
-                    filterByPriceRange()
-                    filteredTransactions.removeAll()
-                    filteredTransactions = Array(transactions)
+                .listRowSeparator(.hidden)
+
+                Section("Filter by Price Range") {
+                    HStack {
+                        TextField("Min", text: $minPrice).keyboardType(.decimalPad)
+                        TextField("Max", text: $maxPrice)
+                            .keyboardType(.decimalPad)
+                        Button("Apply") {
+                            filterByPriceRange()
+                        }
+                    }.textFieldStyle(RoundedBorderTextFieldStyle())
                 }
-                Spacer()
-            }
-            
-            
-        }.padding()
+                .listRowSeparator(.hidden)
+
+                Section("Fiter by Title") {
+                    HStack {
+                        TextField("Title contains...", text: $titleFilter)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Button("Apply") {
+                            filterByTitle()
+                        }
+                    }
+                }
+                .listRowSeparator(.hidden)
+
+                    ForEach(filteredTransactions) { transaction in
+                        TransactionCellView(transaction: transaction)
+                    }
+
+                
+                HStack {
+                    Spacer()
+                    Button("Show All") {
+                        selectedTags.removeAll()
+                        minPrice = ""
+                        maxPrice = ""
+                        filterByPriceRange()
+                        filteredTransactions.removeAll()
+                        filteredTransactions = Array(transactions)
+                    }
+                    Spacer()
+                }
+                .listRowSeparator(.hidden)
+
+                
+                
+            }.padding()
+            .listStyle(.plain)
+            .buttonStyle(.borderless)
     }
 }
 
