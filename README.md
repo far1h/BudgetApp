@@ -20,11 +20,13 @@ Steps taken to implement:
 ```swift
 @FetchRequest(sortDescriptors: []) private var categories: FetchedResults<BudgetCategory>
 ```
+
 2. Fetching Data with Sort Descriptors:
 ```swift
 @FetchRequest(sortDescriptors: [SortDescriptor(\.dateCreated, order: .reverse)])
 private var categories: FetchedResults<BudgetCategory>
 ```
+
 3. Creating a new entity:
 ```swift
 let newItem = CoreDataItem(context: viewContext)
@@ -35,6 +37,7 @@ do {
     // Handle the error
 }
 ```
+
 4. Deleting an entity:
 ```swift
 let itemToDelete = items[index]
@@ -45,6 +48,7 @@ do {
     // Handle the error
 }
 ```
+
 5. Updating an entity:
 ```swift
 let itemToUpdate = items[index]
@@ -55,6 +59,7 @@ do {
     // Handle the error
 }
 ```
+
 6. Relationships:
 ```swift
 // Assuming a one-to-many relationship between Category and Transaction
@@ -71,6 +76,7 @@ do {
     // Handle the error
 }
 ```
+
 7. Fetching related entities:
 ```swift
 // Typecast transactions from NSSet to [Transaction]
@@ -88,5 +94,41 @@ init(category: BudgetCategory) {
     _transactions = FetchRequest(sortDescriptors: [],
         predicate: NSPredicate(format: "category == %@", category)
     )
+}
+```
+
+8. Filtering with String predicates:
+```swift
+// Assuming you have a list of tags and you want to fetch transactions that have any of those tags
+var filteredTransactions: [Transaction] = []
+let tags: [Tag] = [...] // Your array of Tag objects
+
+// Extract titles from tags
+let tagTitles = tags.compactMap { $0.title }
+
+// Create a fetch request with a predicate to filter transactions based on tag titles
+let fetchRequest = Transaction.fetchRequest()
+fetchRequest.predicate = NSPredicate(format: "ANY tags.title IN %@", tagTitles)
+
+do {
+    // Execute the fetch request
+    filteredTransactions = try viewContext.fetch(fetchRequest)
+    print("Filtered Transactions: \(filteredTransactions)")
+} catch {
+    print("Error fetching filtered transactions: \(error)")
+}
+
+```
+9. Filling many-to-many relationships using NSSet:
+```swift
+let selectedTags: Set<Tag> = [...] // Your set of selected Tag objects 
+let newTransaction = Transaction(context: viewContext)
+
+newTransaction.title = "Sample Transaction"
+newTransaction.tags = selectedTags as NSSet
+do {
+    try viewContext.save()
+} catch {
+    // Handle the error
 }
 ```
