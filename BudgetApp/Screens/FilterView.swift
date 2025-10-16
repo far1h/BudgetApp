@@ -14,6 +14,7 @@ struct FilterView: View {
     @State private var filteredTransactions: [Transaction] = []
     @State private var minPrice: String = ""
     @State private var maxPrice: String = ""
+    @State private var titleFilter: String = ""
     
     
     @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
@@ -52,6 +53,21 @@ struct FilterView: View {
         }
     }
     
+    func filterByTitle() {
+        guard !titleFilter.isEmpty else {
+            print("Title filter must be set")
+            return
+        }
+        
+        let fetchRequest = Transaction.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title CONTAINS[c] %@", titleFilter)
+        do {
+            filteredTransactions = try viewContext.fetch(fetchRequest)
+        } catch {
+            print("Error fetching filtered transactions by title: \(error)")
+        }
+    }
+    
     var body: some View {
         VStack (alignment: .leading, spacing: 16) {
             Section( "Filter by Tags") {
@@ -68,7 +84,15 @@ struct FilterView: View {
                     }
                 }.textFieldStyle(RoundedBorderTextFieldStyle())
             }
-            
+            Section("Fiter by Title") {
+                HStack {
+                    TextField("Title contains...", text: $titleFilter)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    Button("Apply") {
+                        filterByTitle()
+                    }
+                }
+            }
             List {
                 ForEach(filteredTransactions) { transaction in
                     TransactionCellView(transaction: transaction)
