@@ -15,8 +15,10 @@ struct FilterView: View {
     @State private var minPrice: String = ""
     @State private var maxPrice: String = ""
     @State private var titleFilter: String = ""
-    @State private var startDate: Date = Date()
-    @State private var endDate: Date = Date()
+    // Date start of the day
+    @State private var startDate: Date = Calendar.current.startOfDay(for: Date())
+    @State private var endDate: Date =
+        Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: Date()) ?? Date()
     @State private var sortOption: SortOption? = nil
     @State private var sortDirection: SortDirection = .asc
     
@@ -45,82 +47,66 @@ struct FilterView: View {
         var id: String { self.rawValue }
         
     }
-    
-    func filterTags(_ tags: Set<Tag>) {
-        if tags.isEmpty {
-            print("No tags selected, showing all transactions")
-            return
+        
+    func performFilter(){
+        
+        print("Performing filter with:")
+        
+        var predicates: [NSPredicate] = []
+        var sortDescriptors: [NSSortDescriptor] = []
+        
+        // Tags Filter
+        if !selectedTags.isEmpty {
+            let tagTitles = selectedTags.compactMap { $0.title }
+            let tagsPredicate = NSPredicate(format: "ANY tags.title IN %@", tagTitles)
+            predicates.append(tagsPredicate)
+            print("Selected Tags: \(tagTitles)")
         }
-        let tagTitles = tags.compactMap { $0.title }
+        
+        // Price Range Filter
+        if let minPriceValue = Double(minPrice), let maxPriceValue = Double(maxPrice), minPriceValue <= maxPriceValue {
+            let pricePredicate = NSPredicate(format: "total >= %f AND total <= %f", minPriceValue, maxPriceValue)
+            predicates.append(pricePredicate)
+        }
+        
+        // Title Filter
+        if !titleFilter.isEmpty {
+            let titlePredicate = NSPredicate(format: "title CONTAINS[c] %@", titleFilter)
+            predicates.append(titlePredicate)
+        }
+        
+        // Date Range Filter
+        let datePredicate = NSPredicate(format: "dateCreated >= %@ AND dateCreated <= %@", startDate as NSDate, endDate as NSDate)
+        predicates.append(datePredicate)
+        
+        // Sort Descriptors
+        if let option = sortOption {
+            let sortDescriptor = NSSortDescriptor(key: option.keyPath, ascending: sortDirection == .asc)
+            sortDescriptors.append(sortDescriptor)
+        }
+        
+        // Combine all predicates
         
         let fetchRequest = Transaction.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "ANY tags.title IN %@", tagTitles)
+        if !predicates.isEmpty {
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }
+        if !sortDescriptors.isEmpty {
+            fetchRequest.sortDescriptors = sortDescriptors
+        }
+        
+        print("Fetch Request Predicate: \(String(describing: fetchRequest.predicate))")
+        
+        // Fetch filtered transactions
         
         do {
             filteredTransactions = try viewContext.fetch(fetchRequest)
         } catch {
             print("Error fetching filtered transactions: \(error)")
         }
+    }
+    
         
-    }
-    
-    func filterByPriceRange() {
-        guard let minPrice = Double(minPrice), let maxPrice = Double(maxPrice), minPrice <= maxPrice else {
-            print("Invalid price range")
-            return
-        }
-        let fetchRequest = Transaction.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "total >= %f AND total <= %f", minPrice, maxPrice)
-        do {
-            filteredTransactions = try viewContext.fetch(fetchRequest)
-            print("Filtered Transactions by Price Range: \(filteredTransactions)")
-        } catch {
-            print("Error fetching filtered transactions by price range: \(error)")
-        }
-    }
-    
-    func filterByTitle() {
-        guard !titleFilter.isEmpty else {
-            print("Title filter must be set")
-            return
-        }
-        
-        let fetchRequest = Transaction.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title CONTAINS[c] %@", titleFilter)
-        do {
-            filteredTransactions = try viewContext.fetch(fetchRequest)
-        } catch {
-            print("Error fetching filtered transactions by title: \(error)")
-        }
-    }
-    
-    func filterByDateRange() {
-        print("Filtering by date range: \(startDate) to \(endDate)")
-        let fetchRequest = Transaction.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "dateCreated >= %@ AND dateCreated <= %@", startDate as NSDate, endDate as NSDate)
-        do {
-            filteredTransactions = try viewContext.fetch(fetchRequest)
-        } catch {
-            print("Error fetching filtered transactions by date range: \(error)")
-        }
-    }
-    
-    func performSort() {
-        guard let option = sortOption else {
-            print("No sort option selected")
-            return
-        }
-        
-        let fetchRequest = Transaction.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: option.keyPath, ascending: sortDirection == .asc)]
-        
-        do {
-            filteredTransactions = try viewContext.fetch(fetchRequest)
-        } catch {
-            print("Error fetching sorted transactions: \(error)")
-        }
-    }
-    
     var body: some View {
         List  {
             
@@ -131,37 +117,23 @@ struct FilterView: View {
                         Text(option.rawValue).tag(option as SortOption?)
                     }
                 }
-                .onChange (of: sortOption) { _ in
-                    performSort()
-                }
                     Picker("Sort Direction", selection: $sortDirection) {
                     ForEach(SortDirection.allCases) { direction in
                         Text(direction.rawValue).tag(direction)
                     }
                 }
-                .onChange (of: sortDirection) { _ in
-                    performSort()
-                }
-                        
             }
             
             Section( "Filter by Tags") {
                 TagsView(selectedTags: $selectedTags)
-                    .onChange(of: selectedTags, perform: filterTags)
             }
             .listRowSeparator(.hidden)
             
             Section("Filter by Price Range") {
                 HStack {
                     TextField("Min", text: $minPrice).keyboardType(.decimalPad)
-                        .onChange(of: minPrice) { _ in
-                            filterByPriceRange()
-                        }
                     TextField("Max", text: $maxPrice)
                         .keyboardType(.decimalPad)
-                        .onChange(of: maxPrice) { _ in
-                            filterByPriceRange()
-                        }
                 }.textFieldStyle(RoundedBorderTextFieldStyle())
             }
             .listRowSeparator(.hidden)
@@ -170,25 +142,46 @@ struct FilterView: View {
                 HStack {
                     TextField("Title contains...", text: $titleFilter)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .onChange(of: titleFilter) { _ in
-                            filterByTitle()
-                        }
                 }
             }
             .listRowSeparator(.hidden)
             
             Section("Filter by Date Range") {
                 DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                    .onChange(of: startDate) { _ in
-                        filterByDateRange()
-                    }
                 DatePicker("End Date", selection: $endDate, displayedComponents: .date)
-                    .onChange(of: endDate) { _ in
-                        filterByDateRange()
-                    }
             }
             .listRowSeparator(.hidden)
-
+            
+            HStack {
+                
+                Button {
+                    performFilter()
+                } label: {
+                    Text("Apply Filters")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .buttonStyle(.borderedProminent)
+                
+                Button {
+                    // Clear all filters
+                    selectedTags.removeAll()
+                    minPrice = ""
+                    maxPrice = ""
+                    titleFilter = ""
+                    startDate = Calendar.current.startOfDay(for: Date())
+                    endDate = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: Date()) ?? Date()
+                    sortOption = nil
+                    sortDirection = .asc
+                    filteredTransactions = Array(transactions)
+                } label: {
+                    Text("Clear Filters")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .listRowSeparator(.hidden)
+            .padding(.top, 16)
+            
             if !filteredTransactions.isEmpty {
                 Section("Filtered Transactions") {
                     ForEach(filteredTransactions) { transaction in
@@ -198,30 +191,12 @@ struct FilterView: View {
 //                .listRowSeparator(.hidden)
                 .listRowBackground(Color(.systemGray6))
             }
-            
-            
-            HStack {
-                Spacer()
-                Button("Show All") {
-                    selectedTags.removeAll()
-                    minPrice = ""
-                    maxPrice = ""
-                    filterByPriceRange()
-                    filteredTransactions.removeAll()
-                    filteredTransactions = Array(transactions)
-                }
-                Spacer()
-            }
-            .listRowSeparator(.hidden)
-            .padding(.top, 8)
-            
-            
-            
-            
-            
+        }
+        .onAppear {
+            // Initialize filteredTransactions with all transactions on appear
+            filteredTransactions = Array(transactions)
         }
             .listStyle(.plain)
-            .buttonStyle(.borderless)
     }
 }
 
