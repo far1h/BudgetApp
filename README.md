@@ -149,3 +149,43 @@ do {
     print("Error fetching filtered transactions: \(error)")
 }
 ```
+
+11. Filter by string containment:
+```swift
+let titleKeyword: String = "Sample"
+let fetchRequest = Transaction.fetchRequest()
+
+// CONTAINS[c] is case insensitive with [c] meaning case insensitive
+// for case sensitive use CONTAINS without [c]
+fetchRequest.predicate = NSPredicate(format: "title CONTAINS[c] %@", titleKeyword)
+
+do {
+    let filteredTransactions = try viewContext.fetch(fetchRequest)
+    print("Filtered Transactions: \(filteredTransactions)")
+} catch {
+    print("Error fetching filtered transactions: \(error)")
+}
+```
+
+12. Compound predicates:
+```swift
+let minAmount: Double = 50.0
+let maxAmount: Double = 200.0
+let startDate: Date = ... // Your start date
+let endDate: Date = ... // Your end date
+let titleKeyword: String = "Sample"
+
+let amountPredicate = NSPredicate(format: "total >= %f AND total <= %f", minAmount, maxAmount)
+let datePredicate = NSPredicate(format: "dateCreated >= %@ AND dateCreated <= %@", startDate as NSDate, endDate as NSDate)
+let titlePredicate = NSPredicate(format: "title CONTAINS[c] %@", titleKeyword)
+
+let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [amountPredicate, datePredicate, titlePredicate])
+let fetchRequest = Transaction.fetchRequest()
+fetchRequest.predicate = compoundPredicate
+do {
+    let filteredTransactions = try viewContext.fetch(fetchRequest)
+    print("Filtered Transactions: \(filteredTransactions)")
+} catch {
+    print("Error fetching filtered transactions: \(error)")
+}
+```
