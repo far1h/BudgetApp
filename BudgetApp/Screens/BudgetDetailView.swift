@@ -20,6 +20,7 @@ struct BudgetDetailView: View {
     @State private var messages: [String] = []
     @State private var isPresentingEditBudgetView: Bool = false
     @State private var selectedTags: Set<Tag> = []
+    @State private var quantity: String = ""
     
     @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
     
@@ -44,6 +45,11 @@ struct BudgetDetailView: View {
         if selectedTags.isEmpty {
             messages.append("At least one tag must be selected.")
         }
+        if !quantity.isEmpty {
+            if Int(quantity) == nil || (Int(quantity) ?? 0) <= 0 {
+                messages.append("Quantity must be a valid integer greater than zero.")
+            }
+        }
         return messages.isEmpty
     }
     
@@ -53,6 +59,7 @@ struct BudgetDetailView: View {
         newTransaction.title = title
         newTransaction.total = Double(total)!
         newTransaction.dateCreated = Date()
+        newTransaction.quantity = Int16(quantity) ?? 0
         newTransaction.tags = selectedTags as NSSet
         
         // available after setting budget category relationship one to many
@@ -105,6 +112,9 @@ struct BudgetDetailView: View {
                     TextField("Title", text: $title)
                     TextField("Total", text: $total)
                         .keyboardType(.decimalPad)
+                    // Quantity input
+                    TextField("Quantity", text: $quantity)
+                        .keyboardType(.numberPad)
                     TagsView(selectedTags: $selectedTags)
                     ButtonView(onClick: addTransaction, buttonTitle: "Add Expense")
                     if !messages.isEmpty {

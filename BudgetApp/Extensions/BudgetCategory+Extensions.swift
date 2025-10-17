@@ -11,8 +11,13 @@ import CoreData
 extension BudgetCategory {
     
     var totalSpent : Double {
-        let transactions = self.transactions as? Set<Transaction> ?? []
-        return transactions.reduce(0) { $0 + $1.total }
+        guard let transactions = transactions as? Set<Transaction> else { return 0 }
+
+        // Calculate total spent by summing up total * quantity for each transaction
+        return transactions.reduce(0) { total, transaction in
+            return total + (transaction.total * Double(transaction.quantity))
+        }
+
     }
     
     var remainingBudget: Double {
