@@ -97,8 +97,9 @@ class CoreDataManager {
                         foodTransaction.dateCreated = Date()
                         foodTransaction.title = item
                         foodTransaction.total = Double.random(in: 10...100)
+                        foodTransaction.quantity = Int16.random(in: 1...12)
                         groceries.addToTransactions(foodTransaction)
-//                        foodTransaction.addToTags(tags)
+                        foodTransaction.addToTags(tags)
                     }
                     
                 } else if tags.title == "Entertainment" {

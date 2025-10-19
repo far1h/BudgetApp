@@ -76,6 +76,11 @@ struct BudgetListView: View {
                             }.onDelete(perform: deleteBudgetCategory)
                         }
                     }
+                    .overlay(alignment: .bottom, content: {
+                        Button("Filter") {
+                            isPresentingFilterView = true
+                        }.buttonStyle(.borderedProminent)
+                    })
                 }
             }.navigationTitle("Budget App")
                 .toolbar {
@@ -93,11 +98,7 @@ struct BudgetListView: View {
                 .sheet(isPresented: $isPresentingFilterView) {
                     FilterView()
                 }
-        }.overlay(alignment: .bottom, content: {
-            Button("Filter") {
-                isPresentingFilterView = true
-            }.buttonStyle(.borderedProminent)
-        })
+        }
     }
 }
 

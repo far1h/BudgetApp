@@ -1,7 +1,7 @@
-#  Trying Core Data in MV Pattern with SwiftUI
+#  Mastering CoreData with SwiftUI
 
 ## Description
-This project demonstrates how to integrate Core Data into a SwiftUI application using the Model-View (MV) architectural pattern. The application allows users to create, read, update, and delete (CRUD) items stored in a Core Data persistent store. This example focuses also demonstrates how to use one-to-many relationships and many-to-one relationships in Core Data.
+This project demonstrates how to integrate Core Data into a SwiftUI application. The application allows users to create, read, update, and delete (CRUD) items stored in a Core Data persistent store. This example focuses also demonstrates how to use one-to-many relationships and many-to-many relationships in Core Data.
 
 Steps taken to implement:
 1. Add Core Data model named `BudgetModel` and create an entity named `BudgetCategory` with attributes `title` (Non-optional String), `total` (Non-optional Double), `dateCreated` (Non-optional Date). 
@@ -13,6 +13,7 @@ Steps taken to implement:
 7. Fetch BudgetCategory entities using @FetchRequest property wrapper to display them in a list.
 8. Implement delete functionality to remove BudgetCategory entities from Core Data. This involves deleting the object from the context and saving the changes.
 9. Add `Transaction` entity with attributes `title` (Non-optional String), `total` (Non-optional Double), `dateCreated` (Non-optional Date), and a one to many relationship to `BudgetCategory`. For each BudgetCategory, there can be multiple Transactions, but each Transaction belongs to one BudgetCategory. 
+10. ...
 
 ## Core Data Notes
 
@@ -149,3 +150,53 @@ do {
     print("Error fetching filtered transactions: \(error)")
 }
 ```
+
+11. Filter by string containment:
+```swift
+let titleKeyword: String = "Sample"
+let fetchRequest = Transaction.fetchRequest()
+
+// CONTAINS[c] is case insensitive with [c] meaning case insensitive
+// for case sensitive use CONTAINS without [c]
+fetchRequest.predicate = NSPredicate(format: "title CONTAINS[c] %@", titleKeyword)
+
+do {
+    let filteredTransactions = try viewContext.fetch(fetchRequest)
+    print("Filtered Transactions: \(filteredTransactions)")
+} catch {
+    print("Error fetching filtered transactions: \(error)")
+}
+```
+
+12. Compound predicates:
+```swift
+let minAmount: Double = 50.0
+let maxAmount: Double = 200.0
+let startDate: Date = ... // Your start date
+let endDate: Date = ... // Your end date
+let titleKeyword: String = "Sample"
+
+let amountPredicate = NSPredicate(format: "total >= %f AND total <= %f", minAmount, maxAmount)
+let datePredicate = NSPredicate(format: "dateCreated >= %@ AND dateCreated <= %@", startDate as NSDate, endDate as NSDate)
+let titlePredicate = NSPredicate(format: "title CONTAINS[c] %@", titleKeyword)
+
+let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [amountPredicate, datePredicate, titlePredicate])
+let fetchRequest = Transaction.fetchRequest()
+fetchRequest.predicate = compoundPredicate
+do {
+    let filteredTransactions = try viewContext.fetch(fetchRequest)
+    print("Filtered Transactions: \(filteredTransactions)")
+} catch {
+    print("Error fetching filtered transactions: \(error)")
+}
+```
+
+13. Simple Migration:
+
+14. Complex Migration:
+
+15. Transformable Attributes:
+
+16. CloudKit Integration:
+
+

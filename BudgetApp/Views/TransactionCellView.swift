@@ -15,8 +15,9 @@ struct TransactionCellView: View {
         VStack(alignment: .leading) {
             HStack {
                 Text(transaction.title ?? "")
+                Text("\(transaction.quantity)")
                 Spacer()
-                Text(transaction.total.toCurrency())
+                Text(transaction.totalAmount.toCurrency())
             }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
